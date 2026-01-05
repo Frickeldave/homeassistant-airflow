@@ -2,6 +2,7 @@
 export interface AirflowCardConfig {
     type: string;
     name?: string;
+    language?: 'en' | 'de';
 
     // Entities
     entity_temp_supply: string; // Zuluft Temperatur
@@ -18,6 +19,12 @@ export interface AirflowCardConfig {
     entity_efficiency?: string; // Wirkungsgrad
     efficiency_calculation_dynamic?: boolean; // Dynamische Berechnung
     entity_bypass?: string; // Sommerbypass (binary_sensor or sensor)
+
+    // Colors
+    color_outdoor?: string;
+    color_supply?: string;
+    color_extract?: string;
+    color_exhaust?: string;
 }
 
 export interface HomeAssistant {

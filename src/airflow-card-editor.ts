@@ -19,6 +19,18 @@ export class AirflowCardEditor extends LitElement {
         return html`
             <div class="card-config">
                 <div class="option">
+                    <ha-select
+                        label="Language"
+                        .value=${this._config.language ?? 'en'}
+                        .configValue=${'language'}
+                        @selected=${this._valueChanged}
+                        @closed=${(ev: any) => ev.stopPropagation()}
+                    >
+                        <mwc-list-item value="en">English</mwc-list-item>
+                        <mwc-list-item value="de">Deutsch</mwc-list-item>
+                    </ha-select>
+                </div>
+                <div class="option">
                     <ha-entity-picker
                         .hass=\${this.hass}
                         .value=\${this._config.entity_temp_supply}
@@ -125,6 +137,37 @@ export class AirflowCardEditor extends LitElement {
                          @value-changed=\${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
+
+                <!-- Colors -->
+                <h3>Colors</h3>
+                <div class="side-by-side">
+                    <ha-textfield
+                        label="Outdoor Color"
+                        .value=${this._config.color_outdoor ?? '#2196F3'}
+                        .configValue=${'color_outdoor'}
+                        @input=${this._valueChanged}
+                    ></ha-textfield>
+                    <ha-textfield
+                        label="Supply Color"
+                        .value=${this._config.color_supply ?? '#4CAF50'}
+                        .configValue=${'color_supply'}
+                        @input=${this._valueChanged}
+                    ></ha-textfield>
+                </div>
+                <div class="side-by-side">
+                    <ha-textfield
+                        label="Extract Color"
+                        .value=${this._config.color_extract ?? '#FFB300'}
+                        .configValue=${'color_extract'}
+                        @input=${this._valueChanged}
+                    ></ha-textfield>
+                    <ha-textfield
+                        label="Exhaust Color"
+                        .value=${this._config.color_exhaust ?? '#F44336'}
+                        .configValue=${'color_exhaust'}
+                        @input=${this._valueChanged}
+                    ></ha-textfield>
+                </div>
             </div>
         `;
     }
@@ -170,6 +213,9 @@ export class AirflowCardEditor extends LitElement {
                 display: flex;
                 flex-direction: column;
             }
+            ha-select {
+                width: 100%;
+            }
             .side-by-side {
                 display: flex;
                 flex-direction: row;
@@ -186,6 +232,12 @@ export class AirflowCardEditor extends LitElement {
             }
             ha-switch {
                 padding: 16px;
+            }
+            h3 {
+                margin: 16px 0 8px 0;
+                font-size: 16px;
+                font-weight: 500;
+                color: var(--secondary-text-color);
             }
         `;
     }

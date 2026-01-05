@@ -26,13 +26,20 @@
 
 <body>
     <h1>Airflow Card Demo</h1>
+
+    <div style="margin-bottom: 20px; text-align: center;">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('de')">Deutsch</button>
+    </div>
+
     <airflow-card id="demo-card"></airflow-card>
 
     <script>
-        customElements.whenDefined('airflow-card').then(() => {
-            const card = document.getElementById('demo-card');
+        let currentLang = 'en';
+        const cardId = 'demo-card';
 
-            // Mock hass object
+        function updateCard() {
+            const card = document.getElementById(cardId);
             const hass = {
                 states: {
                     'sensor.temp_supply': { state: '21.5', attributes: { unit_of_measurement: '°C' } },
@@ -50,6 +57,7 @@
             const config = {
                 type: 'custom:airflow-card',
                 name: 'Ventilation Demo',
+                language: currentLang,
                 entity_temp_supply: 'sensor.temp_supply',
                 entity_temp_extract: 'sensor.temp_extract',
                 entity_temp_outdoor: 'sensor.temp_outdoor',
@@ -61,11 +69,24 @@
                 level_max: 4,
                 entity_efficiency: 'sensor.efficiency',
                 efficiency_calculation_dynamic: true,
-                entity_bypass: 'binary_sensor.bypass'
+                entity_bypass: 'binary_sensor.bypass',
+                color_outdoor: '#2196F3',
+                color_supply: '#4CAF50',
+                color_extract: '#FFB300',
+                color_exhaust: '#F44336'
             };
 
             card.setConfig(config);
             card.hass = hass;
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            updateCard();
+        }
+
+        customElements.whenDefined('airflow-card').then(() => {
+            updateCard();
         });
     </script>
 </body>

@@ -1,6 +1,7 @@
 import { LitElement, html, css, PropertyValues, SVGTemplateResult, svg } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { AirflowCardConfig, HomeAssistant } from './types.js';
+import { translations } from './translations.js';
 import './airflow-card-editor.js'; // Register editor
 
 @customElement('airflow-card')
@@ -29,7 +30,11 @@ export class AirflowCard extends LitElement {
             entity_level: 'sensor.fan_level',
             level_min: 0,
             level_max: 4,
-            entity_efficiency: 'sensor.efficiency'
+            entity_efficiency: 'sensor.efficiency',
+            color_outdoor: '#2196F3',
+            color_supply: '#4CAF50',
+            color_extract: '#FFB300',
+            color_exhaust: '#F44336'
         }
     }
 
@@ -65,10 +70,10 @@ export class AirflowCard extends LitElement {
         // const boxSize = 100; // This variable is no longer used, but keeping it for now if it's not explicitly removed.
 
         // Colors
-        const colorFresh = '#4CAF50'; // Green - Supply/Zuluft
-        const colorStale = '#FFC107'; // Amber - Extract/Abluft
-        const colorExhaust = '#F44336'; // Red - Exhaust/Fortluft
-        const colorOutdoor = '#2196F3'; // Blue - Outdoor/Außenluft
+        const colorFresh = this.config.color_supply || '#4CAF50'; // Green - Supply/Zuluft
+        const colorStale = this.config.color_extract || '#FFB300'; // Amber - Extract/Abluft
+        const colorExhaust = this.config.color_exhaust || '#F44336'; // Red - Exhaust/Fortluft
+        const colorOutdoor = this.config.color_outdoor || '#2196F3'; // Blue - Outdoor/Außenluft
 
         // Bypass State
         const bypassEntity = this.config.entity_bypass;
@@ -90,6 +95,9 @@ export class AirflowCard extends LitElement {
         // Flow: 2s (slow) to 0.2s (fast)
         const fanDuration = levelState > 0 ? (3 - (normalizedLevel * 2.6)).toFixed(2) : 0;
         const flowDuration = levelState > 0 ? (2 - (normalizedLevel * 1.8)).toFixed(2) : 0;
+
+        const lang = this.config.language ?? 'en';
+        const t = translations[lang] || translations.en;
 
         return svg`
        <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" 
@@ -171,14 +179,14 @@ export class AirflowCard extends LitElement {
 
          <!-- Port Boxes (Label + Temperature) -->
          <!-- Top Boxes: Positioned inside the frame, above duct lines -->
-         ${this.renderPortBox(cx - 230, cy - 160, "Outdoor", this.config.entity_temp_outdoor, colorOutdoor)}
-         ${this.renderEfficiency(cx - 45, cy - 160)}
-         ${this.renderPortBox(cx + 140, cy - 160, "Extract", this.config.entity_temp_extract, colorStale)}
+         ${this.renderPortBox(cx - 230, cy - 160, t.outdoor, this.config.entity_temp_outdoor, colorOutdoor)}
+         ${this.renderEfficiency(cx - 45, cy - 160, t.efficiency)}
+         ${this.renderPortBox(cx + 140, cy - 160, t.extract, this.config.entity_temp_extract, colorStale)}
          
          <!-- Bottom Boxes: Positioned inside the frame, below duct lines -->
-         ${this.renderPortBox(cx - 230, cy + 105, "Exhaust", this.config.entity_temp_exhaust, colorExhaust)}
-         ${this.renderLevel(cx - 45, cy + 105)}
-         ${this.renderPortBox(cx + 140, cy + 105, "Supply", this.config.entity_temp_supply, isBypassOpen ? colorOutdoor : colorFresh)}
+         ${this.renderPortBox(cx - 230, cy + 105, t.exhaust, this.config.entity_temp_exhaust, colorExhaust)}
+         ${this.renderPortBox(cx - 45, cy + 105, t.level, this.config.entity_level, "#444")}
+         ${this.renderPortBox(cx + 140, cy + 105, t.supply, this.config.entity_temp_supply, isBypassOpen ? colorOutdoor : colorFresh)}
 
          <!-- Fans -->
          ${this.renderFan(cx + 150, cy + 60, this.config.entity_fan_supply, isBypassOpen ? colorOutdoor : colorFresh)}
@@ -195,7 +203,7 @@ export class AirflowCard extends LitElement {
 
     private renderPortBox(x: number, y: number, label: string, entityId: string | undefined, color: string): SVGTemplateResult {
         const state = entityId ? (this.hass.states[entityId]?.state ?? 'N/A') : '-';
-        const unit = entityId ? (this.hass.states[entityId]?.attributes.unit_of_measurement ?? '°C') : '';
+        const unit = entityId ? (this.hass.states[entityId]?.attributes.unit_of_measurement ?? '') : '';
         const width = 90;
         const height = 55;
 
@@ -221,7 +229,7 @@ export class AirflowCard extends LitElement {
         return svg``;
     }
 
-    private renderEfficiency(x: number, y: number): SVGTemplateResult {
+    private renderEfficiency(x: number, y: number, label: string): SVGTemplateResult {
         let efficiency: string = '-';
 
         if (this.config.efficiency_calculation_dynamic) {
@@ -247,7 +255,7 @@ export class AirflowCard extends LitElement {
         return svg`
             <g transform="translate(${x}, ${y})">
                 <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="white" stroke="black" stroke-width="1" />
-                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="#444">Efficiency</text>
+                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="#444">${label}</text>
                 <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="#333">${efficiency}%</text>
             </g>
         `;
@@ -261,19 +269,7 @@ export class AirflowCard extends LitElement {
         return isNaN(value) ? undefined : value;
     }
 
-    private renderLevel(x: number, y: number): SVGTemplateResult {
-        if (!this.config.entity_level) return svg``;
-        const state = this.hass.states[this.config.entity_level]?.state ?? '-';
-        const width = 90;
-        const height = 55;
-        return svg`
-            <g transform="translate(${x}, ${y})">
-                <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="white" stroke="black" stroke-width="1" />
-                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="#444">Level</text>
-                <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="#333">${state}</text>
-            </g>
-        `;
-    }
+
 
     private renderFan(x: number, y: number, entityId: string | undefined, color: string): SVGTemplateResult {
         const stateObj = entityId ? this.hass.states[entityId] : undefined;
