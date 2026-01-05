@@ -806,26 +806,26 @@ let D = class extends w {
          
          <!-- Background Ducts (Static) -->
          <!-- Path 1: Outdoor -> Supply -->
-         <path d="M ${50} ${165} L ${220} ${165} L ${380} ${285} L ${550} ${285}" fill="none" stroke="#f0f0f0" stroke-width="12" stroke-linecap="round"/>
+         <path d="M ${50} ${165} L ${240} ${165} L ${360} ${285} L ${550} ${285}" fill="none" stroke="#f0f0f0" stroke-width="12" stroke-linecap="round"/>
          <!-- Path 2: Extract -> Exhaust -->
-         <path d="M ${550} ${165} L ${380} ${165} L ${220} ${285} L ${50} ${285}" fill="none" stroke="#f0f0f0" stroke-width="12" stroke-linecap="round"/>
+         <path d="M ${550} ${165} L ${360} ${165} L ${240} ${285} L ${50} ${285}" fill="none" stroke="#f0f0f0" stroke-width="12" stroke-linecap="round"/>
 
          <!-- Animated Airflow Lines -->
          <!-- Path 1: Outdoor (Left Top) -> Supply (Right Bottom) -->
          <!-- Entry -->
-         <path class="flow-line" d="M ${50} ${165} L ${220} ${165}" fill="none" stroke="${a}" stroke-width="8" stroke-linecap="round" />
-         <!-- Crossing (Inside Heat Exchanger) - Thinner -->
-         <path class="flow-line-inner" d="M ${220} ${165} L ${380} ${285}" fill="none" stroke="${i}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+         <path class="flow-line" d="M ${50} ${165} L ${240} ${165}" fill="none" stroke="${a}" stroke-width="8" stroke-linecap="round" />
+         <!-- Crossing (Inside Heat Exchanger) - Thinner at 45 deg -->
+         <path class="flow-line-inner" d="M ${240} ${165} L ${360} ${285}" fill="none" stroke="${i}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
          <!-- Exit -->
-         <path class="flow-line" d="M ${380} ${285} L ${550} ${285}" fill="none" stroke="${i}" stroke-width="8" stroke-linecap="round" />
+         <path class="flow-line" d="M ${360} ${285} L ${550} ${285}" fill="none" stroke="${i}" stroke-width="8" stroke-linecap="round" />
 
          <!-- Path 2: Extract (Right Top) -> Exhaust (Left Bottom) -->
          <!-- Entry -->
-         <path class="flow-line" d="M ${550} ${165} L ${380} ${165}" fill="none" stroke="${o}" stroke-width="8" stroke-linecap="round" />
-         <!-- Crossing (Inside Heat Exchanger) - Thinner -->
-         <path class="flow-line-inner" d="M ${380} ${165} L ${220} ${285}" fill="none" stroke="${r}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+         <path class="flow-line" d="M ${550} ${165} L ${360} ${165}" fill="none" stroke="${o}" stroke-width="8" stroke-linecap="round" />
+         <!-- Crossing (Inside Heat Exchanger) - Thinner at 45 deg -->
+         <path class="flow-line-inner" d="M ${360} ${165} L ${240} ${285}" fill="none" stroke="${r}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
          <!-- Exit -->
-         <path class="flow-line" d="M ${220} ${285} L ${50} ${285}" fill="none" stroke="${r}" stroke-width="8" stroke-linecap="round" />
+         <path class="flow-line" d="M ${240} ${285} L ${50} ${285}" fill="none" stroke="${r}" stroke-width="8" stroke-linecap="round" />
 
          <!-- Port Boxes (Label + Temperature) -->
          <!-- Top Boxes: Positioned inside the frame, above duct lines -->
