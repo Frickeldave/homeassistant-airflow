@@ -16,6 +16,7 @@ export interface AirflowCardConfig {
     level_min?: number; // Minimale Stufe
     level_max?: number; // Maximale Stufe
     entity_efficiency?: string; // Wirkungsgrad
+    efficiency_calculation_dynamic?: boolean; // Dynamische Berechnung
     entity_bypass?: string; // Sommerbypass (binary_sensor or sensor)
 }
 

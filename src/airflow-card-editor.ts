@@ -98,14 +98,23 @@ export class AirflowCardEditor extends LitElement {
                         @input=${this._valueChanged}
                     ></ha-textfield>
                 </div>
-                 <div class="option">
+                  <div class="option">
                     <ha-entity-picker
-                         .hass=\${this.hass}
-                         .value=\${this._config.entity_efficiency}
-                         .configValue=\${'entity_efficiency'}
+                         .hass=${this.hass}
+                         .value=${this._config.entity_efficiency}
+                         .configValue=${'entity_efficiency'}
                          label="Efficiency Sensor (Optional)"
-                         @value-changed=\${this._valueChanged}
+                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
+                </div>
+                <div class="option">
+                    <ha-formfield label="Calculated Efficiency (instead of sensor)">
+                        <ha-switch
+                            .checked=${this._config.efficiency_calculation_dynamic}
+                            .configValue=${'efficiency_calculation_dynamic'}
+                            @change=${this._valueChanged}
+                        ></ha-switch>
+                    </ha-formfield>
                 </div>
                  <div class="option">
                     <ha-entity-picker
@@ -126,7 +135,7 @@ export class AirflowCardEditor extends LitElement {
         }
         const target = ev.target as any;
         const configValue = target.configValue;
-        let value = ev.detail?.value !== undefined ? ev.detail.value : target.value;
+        let value = ev.detail?.value !== undefined ? ev.detail.value : (target.checked !== undefined ? target.checked : target.value);
 
         if (configValue === 'level_min' || configValue === 'level_max') {
             value = value !== '' ? Number(value) : undefined;
@@ -168,6 +177,15 @@ export class AirflowCardEditor extends LitElement {
             }
             .side-by-side > * {
                 flex: 1;
+            }
+            ha-formfield {
+                display: flex;
+                height: 56px;
+                align-items: center;
+                --mdc-typography-body2-font-size: 14px;
+            }
+            ha-switch {
+                padding: 16px;
             }
         `;
     }

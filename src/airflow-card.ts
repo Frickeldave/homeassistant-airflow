@@ -70,6 +70,11 @@ export class AirflowCard extends LitElement {
         const colorExhaust = '#F44336'; // Red - Exhaust/Fortluft
         const colorOutdoor = '#2196F3'; // Blue - Outdoor/Außenluft
 
+        // Bypass State
+        const bypassEntity = this.config.entity_bypass;
+        const bypassState = bypassEntity ? this.hass.states[bypassEntity]?.state : 'off';
+        const isBypassOpen = bypassState === 'on' || bypassState === 'open' || bypassState === 'active';
+
         // Calculate dynamic speeds
         const levelEntity = this.config.entity_level;
         const levelState = levelEntity ? parseFloat(this.hass.states[levelEntity]?.state ?? '0') : 1;
@@ -151,10 +156,10 @@ export class AirflowCard extends LitElement {
          <!-- Path 1: Outdoor (Left Top) -> Supply (Right Bottom) -->
          <!-- Entry -->
          <path class="flow-line" d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 40} ${cy - 40}" fill="none" stroke="${colorOutdoor}" stroke-width="8" stroke-linecap="round" />
-         <!-- Crossing (Inside Heat Exchanger) - Thinner at 45 deg with Gradient -->
-         <path class="flow-line-inner" d="M ${cx - 40} ${cy - 40} L ${cx + 40} ${cy + 40}" fill="none" stroke="url(#gradOutdoorSupply)" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+         <!-- Crossing (Inside Heat Exchanger) - Thinner with Gradient. Diverts if Bypass is Active -->
+         <path class="flow-line-inner" d="${isBypassOpen ? `M ${cx - 40} ${cy - 40} L ${cx - 80} ${cy} L ${cx} ${cy + 80} L ${cx + 40} ${cy + 40}` : `M ${cx - 40} ${cy - 40} L ${cx + 40} ${cy + 40}`}" fill="none" stroke="${isBypassOpen ? colorOutdoor : 'url(#gradOutdoorSupply)'}" stroke-width="4" stroke-linecap="round" opacity="0.8" />
          <!-- Exit -->
-         <path class="flow-line" d="M ${cx + 40} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${colorFresh}" stroke-width="8" stroke-linecap="round" />
+         <path class="flow-line" d="M ${cx + 40} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${isBypassOpen ? colorOutdoor : colorFresh}" stroke-width="8" stroke-linecap="round" />
 
          <!-- Path 2: Extract (Right Top) -> Exhaust (Left Bottom) -->
          <!-- Entry -->
@@ -173,10 +178,10 @@ export class AirflowCard extends LitElement {
          <!-- Bottom Boxes: Positioned inside the frame, below duct lines -->
          ${this.renderPortBox(cx - 230, cy + 105, "Exhaust", this.config.entity_temp_exhaust, colorExhaust)}
          ${this.renderLevel(cx - 45, cy + 105)}
-         ${this.renderPortBox(cx + 140, cy + 105, "Supply", this.config.entity_temp_supply, colorFresh)}
+         ${this.renderPortBox(cx + 140, cy + 105, "Supply", this.config.entity_temp_supply, isBypassOpen ? colorOutdoor : colorFresh)}
 
          <!-- Fans -->
-         ${this.renderFan(cx + 150, cy + 60, this.config.entity_fan_supply, colorFresh)}
+         ${this.renderFan(cx + 150, cy + 60, this.config.entity_fan_supply, isBypassOpen ? colorOutdoor : colorFresh)}
          ${this.renderFan(cx - 150, cy + 60, this.config.entity_fan_extract, colorExhaust)}
          
          <!-- Bypass (If Active) -->
@@ -204,33 +209,56 @@ export class AirflowCard extends LitElement {
     }
 
     private renderBypass(cx: number, cy: number): SVGTemplateResult {
-        if (!this.config.entity_bypass) return svg``;
+        const bypassEntity = this.config.entity_bypass;
+        if (!bypassEntity) return svg``;
 
-        const state = this.hass.states[this.config.entity_bypass]?.state;
+        const stateObj = this.hass.states[bypassEntity];
+        const state = stateObj?.state;
         const isOpen = state === 'on' || state === 'open' || state === 'active';
 
         if (!isOpen) return svg``;
 
-        // Bypass: Outdoor (Top Left) -> Supply (Bottom Right)
-        // Draw a cubic bezier S-curve across the center
-        return svg`
-            <path d="M ${cx - 60} ${cy - 40} C ${cx - 10} ${cy - 40}, ${cx + 10} ${cy + 40}, ${cx + 60} ${cy + 40}" fill="none" stroke="#2196F3" stroke-width="4" stroke-dasharray="5,5" />
-            <text x="${cx}" y="${cy}" font-size="10" text-anchor="middle" fill="#2196F3" dy="-5">BYPASS</text>
-        `;
+        return svg``;
     }
 
     private renderEfficiency(x: number, y: number): SVGTemplateResult {
-        if (!this.config.entity_efficiency) return svg``;
-        const state = this.hass.states[this.config.entity_efficiency]?.state ?? '-';
+        let efficiency: string = '-';
+
+        if (this.config.efficiency_calculation_dynamic) {
+            const tSupply = this._getNumericState(this.config.entity_temp_supply);
+            const tExtract = this._getNumericState(this.config.entity_temp_extract);
+            const tOutdoor = this._getNumericState(this.config.entity_temp_outdoor);
+
+            if (tSupply !== undefined && tExtract !== undefined && tOutdoor !== undefined) {
+                const denom = tExtract - tOutdoor;
+                if (Math.abs(denom) > 0.1) {
+                    const value = ((tSupply - tOutdoor) / denom) * 100;
+                    efficiency = Math.max(0, Math.min(100, Math.round(value))).toString();
+                }
+            }
+        } else if (this.config.entity_efficiency) {
+            efficiency = this.hass.states[this.config.entity_efficiency]?.state ?? '-';
+        } else {
+            return svg``;
+        }
+
         const width = 90;
         const height = 55;
         return svg`
             <g transform="translate(${x}, ${y})">
                 <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="white" stroke="black" stroke-width="1" />
-                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="#444">Effizienz</text>
-                <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="#333">${state}%</text>
+                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="#444">Efficiency</text>
+                <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="#333">${efficiency}%</text>
             </g>
         `;
+    }
+
+    private _getNumericState(entityId: string | undefined): number | undefined {
+        if (!entityId) return undefined;
+        const state = this.hass.states[entityId]?.state;
+        if (state === undefined) return undefined;
+        const value = parseFloat(state);
+        return isNaN(value) ? undefined : value;
     }
 
     private renderLevel(x: number, y: number): SVGTemplateResult {
@@ -241,7 +269,7 @@ export class AirflowCard extends LitElement {
         return svg`
             <g transform="translate(${x}, ${y})">
                 <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="white" stroke="black" stroke-width="1" />
-                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="#444">Stufe</text>
+                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="#444">Level</text>
                 <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="#333">${state}</text>
             </g>
         `;
