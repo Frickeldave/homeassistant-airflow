@@ -286,7 +286,7 @@ A.elementStyles = [], A.shadowRootOptions = { mode: "open" }, A[C("elementProper
  */
 const P = globalThis, st = (n) => n, R = P.trustedTypes, it = R ? R.createPolicy("lit-html", { createHTML: (n) => n }) : void 0, pt = "$lit$", _ = `lit$${Math.random().toFixed(9).slice(2)}$`, ut = "?" + _, Pt = `<${ut}>`, x = document, M = () => x.createComment(""), k = (n) => n === null || typeof n != "object" && typeof n != "function", G = Array.isArray, Ot = (n) => G(n) || typeof (n == null ? void 0 : n[Symbol.iterator]) == "function", F = `[ 	
 \f\r]`, S = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, nt = /-->/g, rt = />/g, g = RegExp(`>|${F}(?:([^\\s"'>=/]+)(${F}*=${F}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), ot = /'/g, at = /"/g, $t = /^(?:script|style|textarea|title)$/i, ft = (n) => (t, ...e) => ({ _$litType$: n, strings: t, values: e }), O = ft(1), $ = ft(2), b = Symbol.for("lit-noChange"), p = Symbol.for("lit-nothing"), ht = /* @__PURE__ */ new WeakMap(), m = x.createTreeWalker(x, 129);
+\f\r"'\`<>=]|("|')|))|$)`, "g"), ot = /'/g, at = /"/g, ft = /^(?:script|style|textarea|title)$/i, $t = (n) => (t, ...e) => ({ _$litType$: n, strings: t, values: e }), O = $t(1), f = $t(2), b = Symbol.for("lit-noChange"), p = Symbol.for("lit-nothing"), ht = /* @__PURE__ */ new WeakMap(), m = x.createTreeWalker(x, 129);
 function _t(n, t) {
   if (!G(n) || !n.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return it !== void 0 ? it.createHTML(t) : t;
@@ -297,9 +297,9 @@ const Mt = (n, t) => {
   for (let a = 0; a < e; a++) {
     const h = n[a];
     let c, d, l = -1, u = 0;
-    for (; u < h.length && (r.lastIndex = u, d = r.exec(h), d !== null); ) u = r.lastIndex, r === S ? d[1] === "!--" ? r = nt : d[1] !== void 0 ? r = rt : d[2] !== void 0 ? ($t.test(d[2]) && (i = RegExp("</" + d[2], "g")), r = g) : d[3] !== void 0 && (r = g) : r === g ? d[0] === ">" ? (r = i ?? S, l = -1) : d[1] === void 0 ? l = -2 : (l = r.lastIndex - d[2].length, c = d[1], r = d[3] === void 0 ? g : d[3] === '"' ? at : ot) : r === at || r === ot ? r = g : r === nt || r === rt ? r = S : (r = g, i = void 0);
-    const f = r === g && n[a + 1].startsWith("/>") ? " " : "";
-    o += r === S ? h + Pt : l >= 0 ? (s.push(c), h.slice(0, l) + pt + h.slice(l) + _ + f) : h + _ + (l === -2 ? a : f);
+    for (; u < h.length && (r.lastIndex = u, d = r.exec(h), d !== null); ) u = r.lastIndex, r === S ? d[1] === "!--" ? r = nt : d[1] !== void 0 ? r = rt : d[2] !== void 0 ? (ft.test(d[2]) && (i = RegExp("</" + d[2], "g")), r = g) : d[3] !== void 0 && (r = g) : r === g ? d[0] === ">" ? (r = i ?? S, l = -1) : d[1] === void 0 ? l = -2 : (l = r.lastIndex - d[2].length, c = d[1], r = d[3] === void 0 ? g : d[3] === '"' ? at : ot) : r === at || r === ot ? r = g : r === nt || r === rt ? r = S : (r = g, i = void 0);
+    const $ = r === g && n[a + 1].startsWith("/>") ? " " : "";
+    o += r === S ? h + Pt : l >= 0 ? (s.push(c), h.slice(0, l) + pt + h.slice(l) + _ + $) : h + _ + (l === -2 ? a : $);
   }
   return [_t(n, o + (n[e] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), s];
 };
@@ -316,14 +316,14 @@ class U {
     for (; (i = m.nextNode()) !== null && h.length < a; ) {
       if (i.nodeType === 1) {
         if (i.hasAttributes()) for (const l of i.getAttributeNames()) if (l.endsWith(pt)) {
-          const u = d[r++], f = i.getAttribute(l).split(_), H = /([.?@])?(.*)/.exec(u);
-          h.push({ type: 1, index: o, name: H[2], strings: f, ctor: H[1] === "." ? Ut : H[1] === "?" ? Tt : H[1] === "@" ? Ht : z }), i.removeAttribute(l);
+          const u = d[r++], $ = i.getAttribute(l).split(_), H = /([.?@])?(.*)/.exec(u);
+          h.push({ type: 1, index: o, name: H[2], strings: $, ctor: H[1] === "." ? Ut : H[1] === "?" ? Tt : H[1] === "@" ? Ht : z }), i.removeAttribute(l);
         } else l.startsWith(_) && (h.push({ type: 6, index: o }), i.removeAttribute(l));
-        if ($t.test(i.tagName)) {
+        if (ft.test(i.tagName)) {
           const l = i.textContent.split(_), u = l.length - 1;
           if (u > 0) {
             i.textContent = R ? R.emptyScript : "";
-            for (let f = 0; f < u; f++) i.append(l[f], M()), m.nextNode(), h.push({ type: 2, index: ++o });
+            for (let $ = 0; $ < u; $++) i.append(l[$], M()), m.nextNode(), h.push({ type: 2, index: ++o });
             i.append(l[u], M());
           }
         }
@@ -765,7 +765,7 @@ let D = class extends E {
   }
   renderDrawing() {
     const i = "#4CAF50", o = "#FFC107", r = "#F44336", a = "#2196F3";
-    return $`
+    return f`
        <svg viewBox="0 0 ${600} ${450}" xmlns="http://www.w3.org/2000/svg">
          <defs>
             <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -786,43 +786,43 @@ let D = class extends E {
             </style>
          </defs>
 
-         <!-- Main Unit Box -->
-         <rect x="${120}" y="${105}" width="360" height="240" rx="12" fill="white" stroke="#333" stroke-width="2" filter="url(#dropShadow)" />
+         <!-- Main Unit Box (Now large enough to contain everything) -->
+         <rect x="${50}" y="${45}" width="500" height="360" rx="15" fill="white" stroke="#333" stroke-width="2" filter="url(#dropShadow)" />
          
          <!-- Heat Exchanger (Diamond shape in middle) -->
          <path d="M ${300} ${145} L ${380} ${225} L ${300} ${305} L ${220} ${225} Z" fill="#eee" stroke="#999" stroke-width="2" />
          
          <!-- Ducts & Arrows -->
          <!-- Outdoor (Left Top) -> Heat Exchanger -->
-         <path d="M ${100} ${165} L ${240} ${165} L ${250} ${185}" fill="none" stroke="${a}" stroke-width="10" />
+         <path d="M ${50} ${165} L ${240} ${165} L ${250} ${185}" fill="none" stroke="${a}" stroke-width="10" />
          
          <!-- Supply (Right Bottom) <- Heat Exchanger -->
-         <path d="M ${350} ${265} L ${360} ${285} L ${500} ${285}" fill="none" stroke="${i}" stroke-width="10" />
+         <path d="M ${350} ${265} L ${360} ${285} L ${550} ${285}" fill="none" stroke="${i}" stroke-width="10" />
 
          <!-- Extract (Right Top) -> Heat Exchanger -->
-         <path d="M ${500} ${165} L ${360} ${165} L ${350} ${185}" fill="none" stroke="${o}" stroke-width="10" />
+         <path d="M ${550} ${165} L ${360} ${165} L ${350} ${185}" fill="none" stroke="${o}" stroke-width="10" />
 
          <!-- Exhaust (Left Bottom) <- Heat Exchanger -->
-         <path d="M ${250} ${265} L ${240} ${285} L ${100} ${285}" fill="none" stroke="${r}" stroke-width="10" />
+         <path d="M ${250} ${265} L ${240} ${285} L ${50} ${285}" fill="none" stroke="${r}" stroke-width="10" />
 
          <!-- Port Boxes (Label + Temperature) -->
-         <!-- Top Boxes: Positioned above the ducts (y < cy-60) -->
-         ${this.renderPortBox(120, 95, "Outdoor", this.config.entity_temp_outdoor, a)}
-         ${this.renderPortBox(390, 95, "Extract", this.config.entity_temp_extract, o)}
+         <!-- Top Boxes: Positioned inside the frame, above duct lines -->
+         ${this.renderPortBox(70, 65, "Outdoor", this.config.entity_temp_outdoor, a)}
+         ${this.renderPortBox(440, 65, "Extract", this.config.entity_temp_extract, o)}
          
-         <!-- Bottom Boxes: Positioned below the ducts (y > cy+60) -->
-         ${this.renderPortBox(390, 300, "Supply", this.config.entity_temp_supply, i)}
-         ${this.renderPortBox(120, 300, "Exhaust", this.config.entity_temp_exhaust, r)}
+         <!-- Bottom Boxes: Positioned inside the frame, below duct lines -->
+         ${this.renderPortBox(440, 330, "Supply", this.config.entity_temp_supply, i)}
+         ${this.renderPortBox(70, 330, "Exhaust", this.config.entity_temp_exhaust, r)}
 
          <!-- Fans -->
-         ${this.renderFan(420, 285, this.config.entity_fan_supply, i)}
-         ${this.renderFan(180, 285, this.config.entity_fan_extract, r)}
+         ${this.renderFan(450, 285, this.config.entity_fan_supply, i)}
+         ${this.renderFan(150, 285, this.config.entity_fan_extract, r)}
          
          <!-- Bypass (If Active) -->
          ${this.renderBypass(300, 225)}
 
          <!-- Efficiency Text (Center) -->
-         <rect x="${275}" y="${210}" width="50" height="30" fill="white" opacity="0.8" rx="5" />
+         <rect x="${270}" y="${205}" width="60" height="40" fill="white" opacity="0.8" rx="6" />
          ${this.renderEfficiency(300, 225)}
 
        </svg>
@@ -831,7 +831,7 @@ let D = class extends E {
   renderPortBox(n, t, e, s, i) {
     var c, d;
     const o = s ? ((c = this.hass.states[s]) == null ? void 0 : c.state) ?? "N/A" : "-", r = s ? ((d = this.hass.states[s]) == null ? void 0 : d.attributes.unit_of_measurement) ?? "°C" : "", a = 90;
-    return $`
+    return f`
             <g transform="translate(${n}, ${t})">
                 <rect x="0" y="0" width="${a}" height="${55}" rx="10" fill="white" stroke="black" stroke-width="1" />
                 <text x="${a / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="${i}">${e}</text>
@@ -841,18 +841,18 @@ let D = class extends E {
   }
   renderBypass(n, t) {
     var i;
-    if (!this.config.entity_bypass) return $``;
+    if (!this.config.entity_bypass) return f``;
     const e = (i = this.hass.states[this.config.entity_bypass]) == null ? void 0 : i.state;
-    return e === "on" || e === "open" || e === "active" ? $`
+    return e === "on" || e === "open" || e === "active" ? f`
             <path d="M ${n - 60} ${t - 40} C ${n - 10} ${t - 40}, ${n + 10} ${t + 40}, ${n + 60} ${t + 40}" fill="none" stroke="#2196F3" stroke-width="4" stroke-dasharray="5,5" />
             <text x="${n}" y="${t}" font-size="10" text-anchor="middle" fill="#2196F3" dy="-5">BYPASS</text>
-        ` : $``;
+        ` : f``;
   }
   renderEfficiency(n, t) {
     var s;
-    if (!this.config.entity_efficiency) return $``;
+    if (!this.config.entity_efficiency) return f``;
     const e = ((s = this.hass.states[this.config.entity_efficiency]) == null ? void 0 : s.state) ?? "-";
-    return $`
+    return f`
             <text x="${n}" y="${t}" font-size="16" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="#444">${e}%</text>
             <text x="${n}" y="${t + 15}" font-size="8" text-anchor="middle" fill="#666">Efficiency</text>
         `;
@@ -860,7 +860,7 @@ let D = class extends E {
   renderFan(n, t, e, s) {
     var r;
     const i = e ? (r = this.hass.states[e]) == null ? void 0 : r.state : "0", o = i === "on" || parseFloat(i) > 0;
-    return $`
+    return f`
             <g transform="translate(${n}, ${t})">
                 <g class="${o ? "fan-spin" : ""}" style="transform-origin: 0 0;">
                     <circle cx="0" cy="0" r="20" fill="white" stroke="${s}" stroke-width="2"/>
@@ -872,7 +872,7 @@ let D = class extends E {
   renderTemp(n, t, e) {
     var o, r;
     const s = e ? ((o = this.hass.states[e]) == null ? void 0 : o.state) ?? "N/A" : "-", i = e ? ((r = this.hass.states[e]) == null ? void 0 : r.attributes.unit_of_measurement) ?? "°C" : "";
-    return $`
+    return f`
             <text x="${n}" y="${t}" font-size="14" text-anchor="middle" fill="#333">${s}${i}</text>
         `;
   }

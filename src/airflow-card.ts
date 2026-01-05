@@ -88,43 +88,43 @@ export class AirflowCard extends LitElement {
             </style>
          </defs>
 
-         <!-- Main Unit Box -->
-         <rect x="${cx - 180}" y="${cy - 120}" width="360" height="240" rx="12" fill="white" stroke="#333" stroke-width="2" filter="url(#dropShadow)" />
+         <!-- Main Unit Box (Now large enough to contain everything) -->
+         <rect x="${cx - 250}" y="${cy - 180}" width="500" height="360" rx="15" fill="white" stroke="#333" stroke-width="2" filter="url(#dropShadow)" />
          
          <!-- Heat Exchanger (Diamond shape in middle) -->
          <path d="M ${cx} ${cy - 80} L ${cx + 80} ${cy} L ${cx} ${cy + 80} L ${cx - 80} ${cy} Z" fill="#eee" stroke="#999" stroke-width="2" />
          
          <!-- Ducts & Arrows -->
          <!-- Outdoor (Left Top) -> Heat Exchanger -->
-         <path d="M ${cx - 200} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 50} ${cy - 40}" fill="none" stroke="${colorOutdoor}" stroke-width="10" />
+         <path d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 50} ${cy - 40}" fill="none" stroke="${colorOutdoor}" stroke-width="10" />
          
          <!-- Supply (Right Bottom) <- Heat Exchanger -->
-         <path d="M ${cx + 50} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 200} ${cy + 60}" fill="none" stroke="${colorFresh}" stroke-width="10" />
+         <path d="M ${cx + 50} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${colorFresh}" stroke-width="10" />
 
          <!-- Extract (Right Top) -> Heat Exchanger -->
-         <path d="M ${cx + 200} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 50} ${cy - 40}" fill="none" stroke="${colorStale}" stroke-width="10" />
+         <path d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 50} ${cy - 40}" fill="none" stroke="${colorStale}" stroke-width="10" />
 
          <!-- Exhaust (Left Bottom) <- Heat Exchanger -->
-         <path d="M ${cx - 50} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 200} ${cy + 60}" fill="none" stroke="${colorExhaust}" stroke-width="10" />
+         <path d="M ${cx - 50} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${colorExhaust}" stroke-width="10" />
 
          <!-- Port Boxes (Label + Temperature) -->
-         <!-- Top Boxes: Positioned above the ducts (y < cy-60) -->
-         ${this.renderPortBox(cx - 180, cy - 130, "Outdoor", this.config.entity_temp_outdoor, colorOutdoor)}
-         ${this.renderPortBox(cx + 90, cy - 130, "Extract", this.config.entity_temp_extract, colorStale)}
+         <!-- Top Boxes: Positioned inside the frame, above duct lines -->
+         ${this.renderPortBox(cx - 230, cy - 160, "Outdoor", this.config.entity_temp_outdoor, colorOutdoor)}
+         ${this.renderPortBox(cx + 140, cy - 160, "Extract", this.config.entity_temp_extract, colorStale)}
          
-         <!-- Bottom Boxes: Positioned below the ducts (y > cy+60) -->
-         ${this.renderPortBox(cx + 90, cy + 75, "Supply", this.config.entity_temp_supply, colorFresh)}
-         ${this.renderPortBox(cx - 180, cy + 75, "Exhaust", this.config.entity_temp_exhaust, colorExhaust)}
+         <!-- Bottom Boxes: Positioned inside the frame, below duct lines -->
+         ${this.renderPortBox(cx + 140, cy + 105, "Supply", this.config.entity_temp_supply, colorFresh)}
+         ${this.renderPortBox(cx - 230, cy + 105, "Exhaust", this.config.entity_temp_exhaust, colorExhaust)}
 
          <!-- Fans -->
-         ${this.renderFan(cx + 120, cy + 60, this.config.entity_fan_supply, colorFresh)}
-         ${this.renderFan(cx - 120, cy + 60, this.config.entity_fan_extract, colorExhaust)}
+         ${this.renderFan(cx + 150, cy + 60, this.config.entity_fan_supply, colorFresh)}
+         ${this.renderFan(cx - 150, cy + 60, this.config.entity_fan_extract, colorExhaust)}
          
          <!-- Bypass (If Active) -->
          ${this.renderBypass(cx, cy)}
 
          <!-- Efficiency Text (Center) -->
-         <rect x="${cx - 25}" y="${cy - 15}" width="50" height="30" fill="white" opacity="0.8" rx="5" />
+         <rect x="${cx - 30}" y="${cy - 20}" width="60" height="40" fill="white" opacity="0.8" rx="6" />
          ${this.renderEfficiency(cx, cy)}
 
        </svg>
