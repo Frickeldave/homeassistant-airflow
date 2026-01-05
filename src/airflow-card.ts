@@ -25,7 +25,9 @@ export class AirflowCard extends LitElement {
             entity_temp_supply: 'sensor.supply_temp',
             entity_temp_extract: 'sensor.extract_temp',
             entity_temp_outdoor: 'sensor.outdoor_temp',
-            entity_temp_exhaust: 'sensor.exhaust_temp'
+            entity_temp_exhaust: 'sensor.exhaust_temp',
+            entity_level: 'sensor.fan_level',
+            entity_efficiency: 'sensor.efficiency'
         }
     }
 
@@ -145,8 +147,9 @@ export class AirflowCard extends LitElement {
          ${this.renderPortBox(cx + 140, cy - 160, "Extract", this.config.entity_temp_extract, colorStale)}
          
          <!-- Bottom Boxes: Positioned inside the frame, below duct lines -->
-         ${this.renderPortBox(cx + 140, cy + 105, "Supply", this.config.entity_temp_supply, colorFresh)}
          ${this.renderPortBox(cx - 230, cy + 105, "Exhaust", this.config.entity_temp_exhaust, colorExhaust)}
+         ${this.renderLevel(cx - 45, cy + 105)}
+         ${this.renderPortBox(cx + 140, cy + 105, "Supply", this.config.entity_temp_supply, colorFresh)}
 
          <!-- Fans -->
          ${this.renderFan(cx + 150, cy + 60, this.config.entity_fan_supply, colorFresh)}
@@ -155,8 +158,7 @@ export class AirflowCard extends LitElement {
          <!-- Bypass (If Active) -->
          ${this.renderBypass(cx, cy)}
 
-         <!-- Level Display (Bottom Center) -->
-         ${this.renderLevel(cx, cy + 120)}
+
 
        </svg>
      `;
@@ -207,15 +209,16 @@ export class AirflowCard extends LitElement {
         `;
     }
 
-    private renderLevel(cx: number, cy: number): SVGTemplateResult {
+    private renderLevel(x: number, y: number): SVGTemplateResult {
         if (!this.config.entity_level) return svg``;
         const state = this.hass.states[this.config.entity_level]?.state ?? '-';
-        const width = 100;
-        const height = 40;
+        const width = 90;
+        const height = 55;
         return svg`
-            <g transform="translate(${cx - width / 2}, ${cy - height / 2})">
-                <rect x="0" y="0" width="${width}" height="${height}" fill="white" opacity="0.8" rx="8" />
-                <text x="${width / 2}" y="${height / 2 + 2}" font-size="14" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="#444">Stufe ${state}</text>
+            <g transform="translate(${x}, ${y})">
+                <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="white" stroke="black" stroke-width="1" />
+                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="#444">Stufe</text>
+                <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="#333">${state}</text>
             </g>
         `;
     }

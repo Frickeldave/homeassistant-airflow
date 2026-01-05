@@ -754,7 +754,9 @@ let D = class extends w {
       entity_temp_supply: "sensor.supply_temp",
       entity_temp_extract: "sensor.extract_temp",
       entity_temp_outdoor: "sensor.outdoor_temp",
-      entity_temp_exhaust: "sensor.exhaust_temp"
+      entity_temp_exhaust: "sensor.exhaust_temp",
+      entity_level: "sensor.fan_level",
+      entity_efficiency: "sensor.efficiency"
     };
   }
   shouldUpdate(n) {
@@ -852,8 +854,9 @@ let D = class extends w {
          ${this.renderPortBox(440, 65, "Extract", this.config.entity_temp_extract, r)}
          
          <!-- Bottom Boxes: Positioned inside the frame, below duct lines -->
-         ${this.renderPortBox(440, 330, "Supply", this.config.entity_temp_supply, i)}
          ${this.renderPortBox(70, 330, "Exhaust", this.config.entity_temp_exhaust, o)}
+         ${this.renderLevel(255, 330)}
+         ${this.renderPortBox(440, 330, "Supply", this.config.entity_temp_supply, i)}
 
          <!-- Fans -->
          ${this.renderFan(450, 285, this.config.entity_fan_supply, i)}
@@ -862,8 +865,7 @@ let D = class extends w {
          <!-- Bypass (If Active) -->
          ${this.renderBypass(300, 225)}
 
-         <!-- Level Display (Bottom Center) -->
-         ${this.renderLevel(300, 345)}
+
 
        </svg>
      `;
@@ -903,11 +905,12 @@ let D = class extends w {
   renderLevel(n, t) {
     var r;
     if (!this.config.entity_level) return u``;
-    const e = ((r = this.hass.states[this.config.entity_level]) == null ? void 0 : r.state) ?? "-", s = 100, i = 40;
+    const e = ((r = this.hass.states[this.config.entity_level]) == null ? void 0 : r.state) ?? "-", s = 90;
     return u`
-            <g transform="translate(${n - s / 2}, ${t - i / 2})">
-                <rect x="0" y="0" width="${s}" height="${i}" fill="white" opacity="0.8" rx="8" />
-                <text x="${s / 2}" y="${i / 2 + 2}" font-size="14" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="#444">Stufe ${e}</text>
+            <g transform="translate(${n}, ${t})">
+                <rect x="0" y="0" width="${s}" height="${55}" rx="10" fill="white" stroke="black" stroke-width="1" />
+                <text x="${s / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="#444">Stufe</text>
+                <text x="${s / 2}" y="42" font-size="14" text-anchor="middle" fill="#333">${e}</text>
             </g>
         `;
   }
