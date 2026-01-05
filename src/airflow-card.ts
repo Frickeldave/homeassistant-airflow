@@ -27,6 +27,8 @@ export class AirflowCard extends LitElement {
             entity_temp_outdoor: 'sensor.outdoor_temp',
             entity_temp_exhaust: 'sensor.exhaust_temp',
             entity_level: 'sensor.fan_level',
+            level_min: 0,
+            level_max: 4,
             entity_efficiency: 'sensor.efficiency'
         }
     }
@@ -229,13 +231,17 @@ export class AirflowCard extends LitElement {
         const unit = stateObj?.attributes.unit_of_measurement ?? '';
 
         // Check if numeric > 0 or "on"
-        const isSpinning = fanState === 'on' || (parseFloat(fanState) > 0);
+        const numericState = parseFloat(fanState);
+        const isSpinning = fanState === 'on' || (numericState > 0);
+        const showSpeed = !isNaN(numericState) && numericState > 0;
 
         // Render a 3-blade fan with a central hub and speed display
         return svg`
             <g transform="translate(${x}, ${y})">
-                <!-- Speed Display above fan -->
-                <text x="0" y="-25" font-size="10" text-anchor="middle" fill="#555" font-weight="bold">${fanState}${unit}</text>
+                <!-- Speed Display above fan (Hidden if 0) -->
+                ${showSpeed ? svg`
+                    <text x="0" y="-25" font-size="10" text-anchor="middle" fill="${color}" font-weight="bold">${fanState} RPM</text>
+                ` : ''}
                 
                 <g class="${isSpinning ? 'fan-spin' : ''}" style="transform-origin: 0 0;">
                     <circle cx="0" cy="0" r="20" fill="white" stroke="${color}" stroke-width="2"/>

@@ -13,6 +13,8 @@ export interface AirflowCardConfig {
     entity_fan_extract?: string; // Umdrehungszahl Motor Abluft
 
     entity_level?: string; // Stufe
+    level_min?: number; // Minimale Stufe
+    level_max?: number; // Maximale Stufe
     entity_efficiency?: string; // Wirkungsgrad
     entity_bypass?: string; // Sommerbypass (binary_sensor or sensor)
 }

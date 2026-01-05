@@ -78,9 +78,25 @@ export class AirflowCardEditor extends LitElement {
                          .hass=${this.hass}
                          .value=${this._config.entity_level}
                          .configValue=${'entity_level'}
-                         label="Fan Level Sensor (Optional, 0-10)"
+                         label="Fan Level Sensor (Optional)"
                          @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
+                </div>
+                <div class="side-by-side">
+                    <ha-textfield
+                        label="Min Level"
+                        type="number"
+                        .value=${this._config.level_min ?? 0}
+                        .configValue=${'level_min'}
+                        @input=${this._valueChanged}
+                    ></ha-textfield>
+                    <ha-textfield
+                        label="Max Level"
+                        type="number"
+                        .value=${this._config.level_max ?? 4}
+                        .configValue=${'level_max'}
+                        @input=${this._valueChanged}
+                    ></ha-textfield>
                 </div>
                  <div class="option">
                     <ha-entity-picker
@@ -110,7 +126,11 @@ export class AirflowCardEditor extends LitElement {
         }
         const target = ev.target as any;
         const configValue = target.configValue;
-        const value = ev.detail.value;
+        let value = ev.detail?.value !== undefined ? ev.detail.value : target.value;
+
+        if (configValue === 'level_min' || configValue === 'level_max') {
+            value = value !== '' ? Number(value) : undefined;
+        }
 
         if (this._config[configValue as keyof AirflowCardConfig] === value) {
             return;
@@ -140,6 +160,14 @@ export class AirflowCardEditor extends LitElement {
             .option {
                 display: flex;
                 flex-direction: column;
+            }
+            .side-by-side {
+                display: flex;
+                flex-direction: row;
+                gap: 8px;
+            }
+            .side-by-side > * {
+                flex: 1;
             }
         `;
     }
