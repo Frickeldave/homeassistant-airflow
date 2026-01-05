@@ -286,7 +286,7 @@ A.elementStyles = [], A.shadowRootOptions = { mode: "open" }, A[C("elementProper
  */
 const P = globalThis, st = (n) => n, R = P.trustedTypes, it = R ? R.createPolicy("lit-html", { createHTML: (n) => n }) : void 0, pt = "$lit$", _ = `lit$${Math.random().toFixed(9).slice(2)}$`, ut = "?" + _, Pt = `<${ut}>`, x = document, O = () => x.createComment(""), M = (n) => n === null || typeof n != "object" && typeof n != "function", G = Array.isArray, kt = (n) => G(n) || typeof (n == null ? void 0 : n[Symbol.iterator]) == "function", F = `[ 	
 \f\r]`, S = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, nt = /-->/g, rt = />/g, g = RegExp(`>|${F}(?:([^\\s"'>=/]+)(${F}*=${F}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), ot = /'/g, at = /"/g, $t = /^(?:script|style|textarea|title)$/i, ft = (n) => (t, ...e) => ({ _$litType$: n, strings: t, values: e }), k = ft(1), $ = ft(2), E = Symbol.for("lit-noChange"), p = Symbol.for("lit-nothing"), ht = /* @__PURE__ */ new WeakMap(), m = x.createTreeWalker(x, 129);
+\f\r"'\`<>=]|("|')|))|$)`, "g"), ot = /'/g, at = /"/g, ft = /^(?:script|style|textarea|title)$/i, $t = (n) => (t, ...e) => ({ _$litType$: n, strings: t, values: e }), k = $t(1), f = $t(2), E = Symbol.for("lit-noChange"), p = Symbol.for("lit-nothing"), ht = /* @__PURE__ */ new WeakMap(), m = x.createTreeWalker(x, 129);
 function _t(n, t) {
   if (!G(n) || !n.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return it !== void 0 ? it.createHTML(t) : t;
@@ -297,33 +297,33 @@ const Ot = (n, t) => {
   for (let a = 0; a < e; a++) {
     const h = n[a];
     let c, d, l = -1, u = 0;
-    for (; u < h.length && (r.lastIndex = u, d = r.exec(h), d !== null); ) u = r.lastIndex, r === S ? d[1] === "!--" ? r = nt : d[1] !== void 0 ? r = rt : d[2] !== void 0 ? ($t.test(d[2]) && (i = RegExp("</" + d[2], "g")), r = g) : d[3] !== void 0 && (r = g) : r === g ? d[0] === ">" ? (r = i ?? S, l = -1) : d[1] === void 0 ? l = -2 : (l = r.lastIndex - d[2].length, c = d[1], r = d[3] === void 0 ? g : d[3] === '"' ? at : ot) : r === at || r === ot ? r = g : r === nt || r === rt ? r = S : (r = g, i = void 0);
-    const f = r === g && n[a + 1].startsWith("/>") ? " " : "";
-    o += r === S ? h + Pt : l >= 0 ? (s.push(c), h.slice(0, l) + pt + h.slice(l) + _ + f) : h + _ + (l === -2 ? a : f);
+    for (; u < h.length && (r.lastIndex = u, d = r.exec(h), d !== null); ) u = r.lastIndex, r === S ? d[1] === "!--" ? r = nt : d[1] !== void 0 ? r = rt : d[2] !== void 0 ? (ft.test(d[2]) && (i = RegExp("</" + d[2], "g")), r = g) : d[3] !== void 0 && (r = g) : r === g ? d[0] === ">" ? (r = i ?? S, l = -1) : d[1] === void 0 ? l = -2 : (l = r.lastIndex - d[2].length, c = d[1], r = d[3] === void 0 ? g : d[3] === '"' ? at : ot) : r === at || r === ot ? r = g : r === nt || r === rt ? r = S : (r = g, i = void 0);
+    const $ = r === g && n[a + 1].startsWith("/>") ? " " : "";
+    o += r === S ? h + Pt : l >= 0 ? (s.push(c), h.slice(0, l) + pt + h.slice(l) + _ + $) : h + _ + (l === -2 ? a : $);
   }
   return [_t(n, o + (n[e] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), s];
 };
-class U {
+class T {
   constructor({ strings: t, _$litType$: e }, s) {
     let i;
     this.parts = [];
     let o = 0, r = 0;
     const a = t.length - 1, h = this.parts, [c, d] = Ot(t, e);
-    if (this.el = U.createElement(c, s), m.currentNode = this.el.content, e === 2 || e === 3) {
+    if (this.el = T.createElement(c, s), m.currentNode = this.el.content, e === 2 || e === 3) {
       const l = this.el.content.firstChild;
       l.replaceWith(...l.childNodes);
     }
     for (; (i = m.nextNode()) !== null && h.length < a; ) {
       if (i.nodeType === 1) {
         if (i.hasAttributes()) for (const l of i.getAttributeNames()) if (l.endsWith(pt)) {
-          const u = d[r++], f = i.getAttribute(l).split(_), T = /([.?@])?(.*)/.exec(u);
-          h.push({ type: 1, index: o, name: T[2], strings: f, ctor: T[1] === "." ? Ut : T[1] === "?" ? Lt : T[1] === "@" ? Tt : z }), i.removeAttribute(l);
+          const u = d[r++], $ = i.getAttribute(l).split(_), L = /([.?@])?(.*)/.exec(u);
+          h.push({ type: 1, index: o, name: L[2], strings: $, ctor: L[1] === "." ? Tt : L[1] === "?" ? Ut : L[1] === "@" ? Lt : z }), i.removeAttribute(l);
         } else l.startsWith(_) && (h.push({ type: 6, index: o }), i.removeAttribute(l));
-        if ($t.test(i.tagName)) {
+        if (ft.test(i.tagName)) {
           const l = i.textContent.split(_), u = l.length - 1;
           if (u > 0) {
             i.textContent = R ? R.emptyScript : "";
-            for (let f = 0; f < u; f++) i.append(l[f], O()), m.nextNode(), h.push({ type: 2, index: ++o });
+            for (let $ = 0; $ < u; $++) i.append(l[$], O()), m.nextNode(), h.push({ type: 2, index: ++o });
             i.append(l[u], O());
           }
         }
@@ -364,7 +364,7 @@ class Mt {
     for (; h !== void 0; ) {
       if (r === h.index) {
         let c;
-        h.type === 2 ? c = new L(o, o.nextSibling, this, t) : h.type === 1 ? c = new h.ctor(o, h.name, h.strings, this, t) : h.type === 6 && (c = new Ht(o, this, t)), this._$AV.push(c), h = s[++a];
+        h.type === 2 ? c = new U(o, o.nextSibling, this, t) : h.type === 1 ? c = new h.ctor(o, h.name, h.strings, this, t) : h.type === 6 && (c = new Ht(o, this, t)), this._$AV.push(c), h = s[++a];
       }
       r !== (h == null ? void 0 : h.index) && (o = m.nextNode(), r++);
     }
@@ -375,7 +375,7 @@ class Mt {
     for (const s of this._$AV) s !== void 0 && (s.strings !== void 0 ? (s._$AI(t, s, e), e += s.strings.length - 2) : s._$AI(t[e])), e++;
   }
 }
-class L {
+class U {
   get _$AU() {
     var t;
     return ((t = this._$AM) == null ? void 0 : t._$AU) ?? this._$Cv;
@@ -408,7 +408,7 @@ class L {
   }
   $(t) {
     var o;
-    const { values: e, _$litType$: s } = t, i = typeof s == "number" ? this._$AC(t) : (s.el === void 0 && (s.el = U.createElement(_t(s.h, s.h[0]), this.options)), s);
+    const { values: e, _$litType$: s } = t, i = typeof s == "number" ? this._$AC(t) : (s.el === void 0 && (s.el = T.createElement(_t(s.h, s.h[0]), this.options)), s);
     if (((o = this._$AH) == null ? void 0 : o._$AD) === i) this._$AH.p(e);
     else {
       const r = new Mt(i, this), a = r.u(this.options);
@@ -417,13 +417,13 @@ class L {
   }
   _$AC(t) {
     let e = ht.get(t.strings);
-    return e === void 0 && ht.set(t.strings, e = new U(t)), e;
+    return e === void 0 && ht.set(t.strings, e = new T(t)), e;
   }
   k(t) {
     G(this._$AH) || (this._$AH = [], this._$AR());
     const e = this._$AH;
     let s, i = 0;
-    for (const o of t) i === e.length ? e.push(s = new L(this.O(O()), this.O(O()), this, this.options)) : s = e[i], s._$AI(o), i++;
+    for (const o of t) i === e.length ? e.push(s = new U(this.O(O()), this.O(O()), this, this.options)) : s = e[i], s._$AI(o), i++;
     i < e.length && (this._$AR(s && s._$AB.nextSibling, i), e.length = i);
   }
   _$AR(t = this._$AA.nextSibling, e) {
@@ -463,7 +463,7 @@ class z {
     t === p ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, t ?? "");
   }
 }
-class Ut extends z {
+class Tt extends z {
   constructor() {
     super(...arguments), this.type = 3;
   }
@@ -471,7 +471,7 @@ class Ut extends z {
     this.element[this.name] = t === p ? void 0 : t;
   }
 }
-class Lt extends z {
+class Ut extends z {
   constructor() {
     super(...arguments), this.type = 4;
   }
@@ -479,7 +479,7 @@ class Lt extends z {
     this.element.toggleAttribute(this.name, !!t && t !== p);
   }
 }
-class Tt extends z {
+class Lt extends z {
   constructor(t, e, s, i, o) {
     super(t, e, s, i, o), this.type = 5;
   }
@@ -505,13 +505,13 @@ class Ht {
   }
 }
 const V = P.litHtmlPolyfillSupport;
-V == null || V(U, L), (P.litHtmlVersions ?? (P.litHtmlVersions = [])).push("3.3.2");
+V == null || V(T, U), (P.litHtmlVersions ?? (P.litHtmlVersions = [])).push("3.3.2");
 const Nt = (n, t, e) => {
   const s = (e == null ? void 0 : e.renderBefore) ?? t;
   let i = s._$litPart$;
   if (i === void 0) {
     const o = (e == null ? void 0 : e.renderBefore) ?? null;
-    s._$litPart$ = i = new L(t.insertBefore(O(), o), o, void 0, e ?? {});
+    s._$litPart$ = i = new U(t.insertBefore(O(), o), o, void 0, e ?? {});
   }
   return i._$AI(n), i;
 };
@@ -765,7 +765,7 @@ let D = class extends w {
   }
   renderDrawing() {
     const i = "#4CAF50", o = "#FFC107", r = "#F44336", a = "#2196F3";
-    return $`
+    return f`
        <svg viewBox="0 0 ${600} ${450}" xmlns="http://www.w3.org/2000/svg">
          <defs>
             <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -785,11 +785,15 @@ let D = class extends w {
                 @keyframes spin { 100% { transform: rotate(360deg); } }
                 
                 .flow-line {
-                    stroke-dasharray: 10, 20;
-                    animation: flow 1s linear infinite;
+                    stroke-dasharray: 10, 15;
+                    animation: flow 0.8s linear infinite;
+                }
+                .flow-line-inner {
+                    stroke-dasharray: 4, 8;
+                    animation: flow 0.8s linear infinite;
                 }
                 @keyframes flow {
-                    to { stroke-dashoffset: -30; }
+                    to { stroke-dashoffset: -25; }
                 }
             </style>
          </defs>
@@ -798,26 +802,30 @@ let D = class extends w {
          <rect x="${50}" y="${45}" width="500" height="360" rx="15" fill="white" stroke="#333" stroke-width="2" filter="url(#dropShadow)" />
          
          <!-- Heat Exchanger (Diamond shape in middle) -->
-         <path d="M ${300} ${145} L ${380} ${225} L ${300} ${305} L ${220} ${225} Z" fill="#eee" stroke="#999" stroke-width="2" />
+         <path d="M ${300} ${145} L ${380} ${225} L ${300} ${305} L ${220} ${225} Z" fill="#fdfdfd" stroke="#ccc" stroke-width="1" />
          
-         <!-- Ducts & Arrows (Static) -->
-         <path d="M ${50} ${165} L ${240} ${165} L ${250} ${185}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
-         <path d="M ${350} ${265} L ${360} ${285} L ${550} ${285}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
-         <path d="M ${550} ${165} L ${360} ${165} L ${350} ${185}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
-         <path d="M ${250} ${265} L ${240} ${285} L ${50} ${285}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
+         <!-- Background Ducts (Static) -->
+         <!-- Path 1: Outdoor -> Supply -->
+         <path d="M ${50} ${165} L ${220} ${165} L ${380} ${285} L ${550} ${285}" fill="none" stroke="#f0f0f0" stroke-width="12" stroke-linecap="round"/>
+         <!-- Path 2: Extract -> Exhaust -->
+         <path d="M ${550} ${165} L ${380} ${165} L ${220} ${285} L ${50} ${285}" fill="none" stroke="#f0f0f0" stroke-width="12" stroke-linecap="round"/>
 
          <!-- Animated Airflow Lines -->
-         <!-- Outdoor (Left Top) -> Heat Exchanger -->
-         <path class="flow-line" d="M ${50} ${165} L ${240} ${165} L ${250} ${185}" fill="none" stroke="${a}" stroke-width="10" stroke-linecap="round" />
-         
-         <!-- Supply (Right Bottom) <- Heat Exchanger -->
-         <path class="flow-line" d="M ${350} ${265} L ${360} ${285} L ${550} ${285}" fill="none" stroke="${i}" stroke-width="10" stroke-linecap="round" />
+         <!-- Path 1: Outdoor (Left Top) -> Supply (Right Bottom) -->
+         <!-- Entry -->
+         <path class="flow-line" d="M ${50} ${165} L ${220} ${165}" fill="none" stroke="${a}" stroke-width="8" stroke-linecap="round" />
+         <!-- Crossing (Inside Heat Exchanger) - Thinner -->
+         <path class="flow-line-inner" d="M ${220} ${165} L ${380} ${285}" fill="none" stroke="${i}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+         <!-- Exit -->
+         <path class="flow-line" d="M ${380} ${285} L ${550} ${285}" fill="none" stroke="${i}" stroke-width="8" stroke-linecap="round" />
 
-         <!-- Extract (Right Top) -> Heat Exchanger -->
-         <path class="flow-line" d="M ${550} ${165} L ${360} ${165} L ${350} ${185}" fill="none" stroke="${o}" stroke-width="10" stroke-linecap="round" />
-
-         <!-- Exhaust (Left Bottom) <- Heat Exchanger -->
-         <path class="flow-line" d="M ${250} ${265} L ${240} ${285} L ${50} ${285}" fill="none" stroke="${r}" stroke-width="10" stroke-linecap="round" />
+         <!-- Path 2: Extract (Right Top) -> Exhaust (Left Bottom) -->
+         <!-- Entry -->
+         <path class="flow-line" d="M ${550} ${165} L ${380} ${165}" fill="none" stroke="${o}" stroke-width="8" stroke-linecap="round" />
+         <!-- Crossing (Inside Heat Exchanger) - Thinner -->
+         <path class="flow-line-inner" d="M ${380} ${165} L ${220} ${285}" fill="none" stroke="${r}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+         <!-- Exit -->
+         <path class="flow-line" d="M ${220} ${285} L ${50} ${285}" fill="none" stroke="${r}" stroke-width="8" stroke-linecap="round" />
 
          <!-- Port Boxes (Label + Temperature) -->
          <!-- Top Boxes: Positioned inside the frame, above duct lines -->
@@ -845,7 +853,7 @@ let D = class extends w {
   renderPortBox(n, t, e, s, i) {
     var c, d;
     const o = s ? ((c = this.hass.states[s]) == null ? void 0 : c.state) ?? "N/A" : "-", r = s ? ((d = this.hass.states[s]) == null ? void 0 : d.attributes.unit_of_measurement) ?? "°C" : "", a = 90;
-    return $`
+    return f`
             <g transform="translate(${n}, ${t})">
                 <rect x="0" y="0" width="${a}" height="${55}" rx="10" fill="white" stroke="black" stroke-width="1" />
                 <text x="${a / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="${i}">${e}</text>
@@ -855,18 +863,18 @@ let D = class extends w {
   }
   renderBypass(n, t) {
     var i;
-    if (!this.config.entity_bypass) return $``;
+    if (!this.config.entity_bypass) return f``;
     const e = (i = this.hass.states[this.config.entity_bypass]) == null ? void 0 : i.state;
-    return e === "on" || e === "open" || e === "active" ? $`
+    return e === "on" || e === "open" || e === "active" ? f`
             <path d="M ${n - 60} ${t - 40} C ${n - 10} ${t - 40}, ${n + 10} ${t + 40}, ${n + 60} ${t + 40}" fill="none" stroke="#2196F3" stroke-width="4" stroke-dasharray="5,5" />
             <text x="${n}" y="${t}" font-size="10" text-anchor="middle" fill="#2196F3" dy="-5">BYPASS</text>
-        ` : $``;
+        ` : f``;
   }
   renderEfficiency(n, t) {
     var s;
-    if (!this.config.entity_efficiency) return $``;
+    if (!this.config.entity_efficiency) return f``;
     const e = ((s = this.hass.states[this.config.entity_efficiency]) == null ? void 0 : s.state) ?? "-";
-    return $`
+    return f`
             <text x="${n}" y="${t}" font-size="16" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="#444">${e}%</text>
             <text x="${n}" y="${t + 15}" font-size="8" text-anchor="middle" fill="#666">Efficiency</text>
         `;
@@ -874,7 +882,7 @@ let D = class extends w {
   renderFan(n, t, e, s) {
     var r;
     const i = e ? (r = this.hass.states[e]) == null ? void 0 : r.state : "0", o = i === "on" || parseFloat(i) > 0;
-    return $`
+    return f`
             <g transform="translate(${n}, ${t})">
                 <g class="${o ? "fan-spin" : ""}" style="transform-origin: 0 0;">
                     <circle cx="0" cy="0" r="20" fill="white" stroke="${s}" stroke-width="2"/>
@@ -886,7 +894,7 @@ let D = class extends w {
   renderTemp(n, t, e) {
     var o, r;
     const s = e ? ((o = this.hass.states[e]) == null ? void 0 : o.state) ?? "N/A" : "-", i = e ? ((r = this.hass.states[e]) == null ? void 0 : r.attributes.unit_of_measurement) ?? "°C" : "";
-    return $`
+    return f`
             <text x="${n}" y="${t}" font-size="14" text-anchor="middle" fill="#333">${s}${i}</text>
         `;
   }

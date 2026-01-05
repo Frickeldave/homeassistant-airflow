@@ -87,11 +87,15 @@ export class AirflowCard extends LitElement {
                 @keyframes spin { 100% { transform: rotate(360deg); } }
                 
                 .flow-line {
-                    stroke-dasharray: 10, 20;
-                    animation: flow 1s linear infinite;
+                    stroke-dasharray: 10, 15;
+                    animation: flow 0.8s linear infinite;
+                }
+                .flow-line-inner {
+                    stroke-dasharray: 4, 8;
+                    animation: flow 0.8s linear infinite;
                 }
                 @keyframes flow {
-                    to { stroke-dashoffset: -30; }
+                    to { stroke-dashoffset: -25; }
                 }
             </style>
          </defs>
@@ -100,26 +104,30 @@ export class AirflowCard extends LitElement {
          <rect x="${cx - 250}" y="${cy - 180}" width="500" height="360" rx="15" fill="white" stroke="#333" stroke-width="2" filter="url(#dropShadow)" />
          
          <!-- Heat Exchanger (Diamond shape in middle) -->
-         <path d="M ${cx} ${cy - 80} L ${cx + 80} ${cy} L ${cx} ${cy + 80} L ${cx - 80} ${cy} Z" fill="#eee" stroke="#999" stroke-width="2" />
+         <path d="M ${cx} ${cy - 80} L ${cx + 80} ${cy} L ${cx} ${cy + 80} L ${cx - 80} ${cy} Z" fill="#fdfdfd" stroke="#ccc" stroke-width="1" />
          
-         <!-- Ducts & Arrows (Static) -->
-         <path d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 50} ${cy - 40}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
-         <path d="M ${cx + 50} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
-         <path d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 50} ${cy - 40}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
-         <path d="M ${cx - 50} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
+         <!-- Background Ducts (Static) -->
+         <!-- Path 1: Outdoor -> Supply -->
+         <path d="M ${cx - 250} ${cy - 60} L ${cx - 80} ${cy - 60} L ${cx + 80} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="#f0f0f0" stroke-width="12" stroke-linecap="round"/>
+         <!-- Path 2: Extract -> Exhaust -->
+         <path d="M ${cx + 250} ${cy - 60} L ${cx + 80} ${cy - 60} L ${cx - 80} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="#f0f0f0" stroke-width="12" stroke-linecap="round"/>
 
          <!-- Animated Airflow Lines -->
-         <!-- Outdoor (Left Top) -> Heat Exchanger -->
-         <path class="flow-line" d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 50} ${cy - 40}" fill="none" stroke="${colorOutdoor}" stroke-width="10" stroke-linecap="round" />
-         
-         <!-- Supply (Right Bottom) <- Heat Exchanger -->
-         <path class="flow-line" d="M ${cx + 50} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${colorFresh}" stroke-width="10" stroke-linecap="round" />
+         <!-- Path 1: Outdoor (Left Top) -> Supply (Right Bottom) -->
+         <!-- Entry -->
+         <path class="flow-line" d="M ${cx - 250} ${cy - 60} L ${cx - 80} ${cy - 60}" fill="none" stroke="${colorOutdoor}" stroke-width="8" stroke-linecap="round" />
+         <!-- Crossing (Inside Heat Exchanger) - Thinner -->
+         <path class="flow-line-inner" d="M ${cx - 80} ${cy - 60} L ${cx + 80} ${cy + 60}" fill="none" stroke="${colorFresh}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+         <!-- Exit -->
+         <path class="flow-line" d="M ${cx + 80} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${colorFresh}" stroke-width="8" stroke-linecap="round" />
 
-         <!-- Extract (Right Top) -> Heat Exchanger -->
-         <path class="flow-line" d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 50} ${cy - 40}" fill="none" stroke="${colorStale}" stroke-width="10" stroke-linecap="round" />
-
-         <!-- Exhaust (Left Bottom) <- Heat Exchanger -->
-         <path class="flow-line" d="M ${cx - 50} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${colorExhaust}" stroke-width="10" stroke-linecap="round" />
+         <!-- Path 2: Extract (Right Top) -> Exhaust (Left Bottom) -->
+         <!-- Entry -->
+         <path class="flow-line" d="M ${cx + 250} ${cy - 60} L ${cx + 80} ${cy - 60}" fill="none" stroke="${colorStale}" stroke-width="8" stroke-linecap="round" />
+         <!-- Crossing (Inside Heat Exchanger) - Thinner -->
+         <path class="flow-line-inner" d="M ${cx + 80} ${cy - 60} L ${cx - 80} ${cy + 60}" fill="none" stroke="${colorExhaust}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+         <!-- Exit -->
+         <path class="flow-line" d="M ${cx - 80} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${colorExhaust}" stroke-width="8" stroke-linecap="round" />
 
          <!-- Port Boxes (Label + Temperature) -->
          <!-- Top Boxes: Positioned inside the frame, above duct lines -->
