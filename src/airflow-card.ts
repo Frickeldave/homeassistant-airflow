@@ -53,13 +53,13 @@ export class AirflowCard extends LitElement {
     }
 
     private renderDrawing(): SVGTemplateResult {
-        const width = 500;
-        const height = 300;
+        const width = 600;
+        const height = 450;
 
         // Coordinates
         const cx = width / 2;
         const cy = height / 2;
-        const boxSize = 100;
+        // const boxSize = 100; // This variable is no longer used, but keeping it for now if it's not explicitly removed.
 
         // Colors
         const colorFresh = '#4CAF50'; // Green - Supply/Zuluft
@@ -89,31 +89,36 @@ export class AirflowCard extends LitElement {
          </defs>
 
          <!-- Main Unit Box -->
-         <rect x="${cx - 150}" y="${cy - 100}" width="300" height="200" rx="10" fill="white" stroke="#333" stroke-width="2" filter="url(#dropShadow)" />
+         <rect x="${cx - 180}" y="${cy - 120}" width="360" height="240" rx="12" fill="white" stroke="#333" stroke-width="2" filter="url(#dropShadow)" />
          
          <!-- Heat Exchanger (Diamond shape in middle) -->
-         <path d="M ${cx} ${cy - 70} L ${cx + 70} ${cy} L ${cx} ${cy + 70} L ${cx - 70} ${cy} Z" fill="#eee" stroke="#999" stroke-width="2" />
+         <path d="M ${cx} ${cy - 80} L ${cx + 80} ${cy} L ${cx} ${cy + 80} L ${cx - 80} ${cy} Z" fill="#eee" stroke="#999" stroke-width="2" />
          
          <!-- Ducts & Arrows -->
          <!-- Outdoor (Left Top) -> Heat Exchanger -->
-         <path d="M ${cx - 150} ${cy - 50} L ${cx - 70} ${cy - 50} L ${cx - 50} ${cy - 30}" fill="none" stroke="${colorOutdoor}" stroke-width="8" />
-         <text x="${cx - 130}" y="${cy - 80}" fill="${colorOutdoor}" font-size="12">Outdoor</text>
+         <path d="M ${cx - 200} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 50} ${cy - 40}" fill="none" stroke="${colorOutdoor}" stroke-width="10" />
          
          <!-- Supply (Right Bottom) <- Heat Exchanger -->
-         <path d="M ${cx + 50} ${cy + 30} L ${cx + 70} ${cy + 50} L ${cx + 150} ${cy + 50}" fill="none" stroke="${colorFresh}" stroke-width="8" />
-         <text x="${cx + 100}" y="${cy + 80}" fill="${colorFresh}" font-size="12">Supply</text>
+         <path d="M ${cx + 50} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 200} ${cy + 60}" fill="none" stroke="${colorFresh}" stroke-width="10" />
 
          <!-- Extract (Right Top) -> Heat Exchanger -->
-         <path d="M ${cx + 150} ${cy - 50} L ${cx + 70} ${cy - 50} L ${cx + 50} ${cy - 30}" fill="none" stroke="${colorStale}" stroke-width="8" />
-         <text x="${cx + 100}" y="${cy - 80}" fill="${colorStale}" font-size="12">Extract</text>
+         <path d="M ${cx + 200} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 50} ${cy - 40}" fill="none" stroke="${colorStale}" stroke-width="10" />
 
          <!-- Exhaust (Left Bottom) <- Heat Exchanger -->
-         <path d="M ${cx - 50} ${cy + 30} L ${cx - 70} ${cy + 50} L ${cx - 150} ${cy + 50}" fill="none" stroke="${colorExhaust}" stroke-width="8" />
-         <text x="${cx - 130}" y="${cy + 80}" fill="${colorExhaust}" font-size="12">Exhaust</text>
+         <path d="M ${cx - 50} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 200} ${cy + 60}" fill="none" stroke="${colorExhaust}" stroke-width="10" />
+
+         <!-- Port Boxes (Label + Temperature) -->
+         <!-- Top Boxes: Positioned above the ducts (y < cy-60) -->
+         ${this.renderPortBox(cx - 180, cy - 130, "Outdoor", this.config.entity_temp_outdoor, colorOutdoor)}
+         ${this.renderPortBox(cx + 90, cy - 130, "Extract", this.config.entity_temp_extract, colorStale)}
+         
+         <!-- Bottom Boxes: Positioned below the ducts (y > cy+60) -->
+         ${this.renderPortBox(cx + 90, cy + 75, "Supply", this.config.entity_temp_supply, colorFresh)}
+         ${this.renderPortBox(cx - 180, cy + 75, "Exhaust", this.config.entity_temp_exhaust, colorExhaust)}
 
          <!-- Fans -->
-         ${this.renderFan(cx + 100, cy + 50, this.config.entity_fan_supply, colorFresh)}
-         ${this.renderFan(cx - 100, cy - 50, this.config.entity_fan_extract, colorExhaust)}
+         ${this.renderFan(cx + 120, cy + 60, this.config.entity_fan_supply, colorFresh)}
+         ${this.renderFan(cx - 120, cy + 60, this.config.entity_fan_extract, colorExhaust)}
          
          <!-- Bypass (If Active) -->
          ${this.renderBypass(cx, cy)}
@@ -122,14 +127,23 @@ export class AirflowCard extends LitElement {
          <rect x="${cx - 25}" y="${cy - 15}" width="50" height="30" fill="white" opacity="0.8" rx="5" />
          ${this.renderEfficiency(cx, cy)}
 
-         <!-- Overlay Text (Temperatures) -->
-         ${this.renderTemp(cx - 110, cy - 60, this.config.entity_temp_outdoor)}
-         ${this.renderTemp(cx + 110, cy + 40, this.config.entity_temp_supply)}
-         ${this.renderTemp(cx + 110, cy - 60, this.config.entity_temp_extract)}
-         ${this.renderTemp(cx - 110, cy + 40, this.config.entity_temp_exhaust)}
-
        </svg>
      `;
+    }
+
+    private renderPortBox(x: number, y: number, label: string, entityId: string | undefined, color: string): SVGTemplateResult {
+        const state = entityId ? (this.hass.states[entityId]?.state ?? 'N/A') : '-';
+        const unit = entityId ? (this.hass.states[entityId]?.attributes.unit_of_measurement ?? '°C') : '';
+        const width = 90;
+        const height = 55;
+
+        return svg`
+            <g transform="translate(${x}, ${y})">
+                <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="white" stroke="black" stroke-width="1" />
+                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="${color}">${label}</text>
+                <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="#333">${state}${unit}</text>
+            </g>
+        `;
     }
 
     private renderBypass(cx: number, cy: number): SVGTemplateResult {
@@ -140,11 +154,11 @@ export class AirflowCard extends LitElement {
 
         if (!isOpen) return svg``;
 
-        // Bypass: Outdoor (Left Top) -> Supply (Right Bottom)
-        // Draw a path bypassing the heat exchanger
+        // Bypass: Outdoor (Top Left) -> Supply (Bottom Right)
+        // Draw a cubic bezier S-curve across the center
         return svg`
-            <path d="M ${cx - 60} ${cy - 40} Q ${cx} ${cy - 90} ${cx + 60} ${cy - 40}" fill="none" stroke="#2196F3" stroke-width="4" stroke-dasharray="5,5" />
-            <text x="${cx}" y="${cy - 80}" font-size="10" text-anchor="middle" fill="#2196F3">BYPASS</text>
+            <path d="M ${cx - 60} ${cy - 40} C ${cx - 10} ${cy - 40}, ${cx + 10} ${cy + 40}, ${cx + 60} ${cy + 40}" fill="none" stroke="#2196F3" stroke-width="4" stroke-dasharray="5,5" />
+            <text x="${cx}" y="${cy}" font-size="10" text-anchor="middle" fill="#2196F3" dy="-5">BYPASS</text>
         `;
     }
 
