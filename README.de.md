@@ -16,7 +16,7 @@ Die folgenden Begriffe werden für die Luftwege verwendet:
 ## Funktionen
 - Visualisierung von Zuluft, Abluft, Fortluft und Außenluft.
 - Animierte Lüfter (basierend auf Status oder RPM).
-- Anzeige des Wirkungsgrads des Wärmetauschers.
+- Anzeige des Wirkungsgrads und der Lüfterstufe.
 - Visualisierung des Sommerbypass (aktiv/inaktiv).
 - Konfiguration über den visuellen Editor.
 
@@ -42,6 +42,7 @@ Fügen Sie die Karte zu Ihrem Dashboard hinzu und konfigurieren Sie die Entität
 - Zuluft Ventilator (RPM oder an/aus)
 - Abluft Ventilator (RPM oder an/aus)
 - Wirkungsgrad Sensor (%)
+- Lüfterstufe (z. B. 1-10)
 - Bypass Entität (binary_sensor oder sensor)
 
 ## Entwicklung

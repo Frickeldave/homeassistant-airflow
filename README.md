@@ -16,7 +16,7 @@ The following standard terminology is used for the air paths:
 ## Features
 - Visualization of Supply, Extract, Exhaust, and Outdoor airflows.
 - Animated fans based on state or RPM.
-- Heat exchanger efficiency display.
+- Heat exchanger efficiency and fan level display.
 - Bypass activation visualization.
 - Configuration via UI editor.
 
@@ -42,6 +42,7 @@ Add the card to your dashboard and configure the entities via the Visual Editor.
 - Supply Fan (RPM or on/off)
 - Extract Fan (RPM or on/off)
 - Efficiency Sensor (%)
+- Fan Level (e.g., 1-10)
 - Bypass Entity (binary_sensor or sensor)
 
 ## Development

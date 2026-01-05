@@ -141,6 +141,7 @@ export class AirflowCard extends LitElement {
          <!-- Port Boxes (Label + Temperature) -->
          <!-- Top Boxes: Positioned inside the frame, above duct lines -->
          ${this.renderPortBox(cx - 230, cy - 160, "Outdoor", this.config.entity_temp_outdoor, colorOutdoor)}
+         ${this.renderEfficiency(cx - 45, cy - 160)}
          ${this.renderPortBox(cx + 140, cy - 160, "Extract", this.config.entity_temp_extract, colorStale)}
          
          <!-- Bottom Boxes: Positioned inside the frame, below duct lines -->
@@ -154,9 +155,8 @@ export class AirflowCard extends LitElement {
          <!-- Bypass (If Active) -->
          ${this.renderBypass(cx, cy)}
 
-         <!-- Efficiency Text (Center) -->
-         <rect x="${cx - 30}" y="${cy - 20}" width="60" height="40" fill="white" opacity="0.8" rx="6" />
-         ${this.renderEfficiency(cx, cy)}
+         <!-- Level Display (Bottom Center) -->
+         ${this.renderLevel(cx, cy + 120)}
 
        </svg>
      `;
@@ -193,23 +193,47 @@ export class AirflowCard extends LitElement {
         `;
     }
 
-    private renderEfficiency(cx: number, cy: number): SVGTemplateResult {
+    private renderEfficiency(x: number, y: number): SVGTemplateResult {
         if (!this.config.entity_efficiency) return svg``;
         const state = this.hass.states[this.config.entity_efficiency]?.state ?? '-';
+        const width = 90;
+        const height = 55;
         return svg`
-            <text x="${cx}" y="${cy}" font-size="16" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="#444">${state}%</text>
-            <text x="${cx}" y="${cy + 15}" font-size="8" text-anchor="middle" fill="#666">Efficiency</text>
+            <g transform="translate(${x}, ${y})">
+                <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="white" stroke="black" stroke-width="1" />
+                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="#444">Effizienz</text>
+                <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="#333">${state}%</text>
+            </g>
+        `;
+    }
+
+    private renderLevel(cx: number, cy: number): SVGTemplateResult {
+        if (!this.config.entity_level) return svg``;
+        const state = this.hass.states[this.config.entity_level]?.state ?? '-';
+        const width = 100;
+        const height = 40;
+        return svg`
+            <g transform="translate(${cx - width / 2}, ${cy - height / 2})">
+                <rect x="0" y="0" width="${width}" height="${height}" fill="white" opacity="0.8" rx="8" />
+                <text x="${width / 2}" y="${height / 2 + 2}" font-size="14" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="#444">Stufe ${state}</text>
+            </g>
         `;
     }
 
     private renderFan(x: number, y: number, entityId: string | undefined, color: string): SVGTemplateResult {
-        const fanState = entityId ? this.hass.states[entityId]?.state : '0';
+        const stateObj = entityId ? this.hass.states[entityId] : undefined;
+        const fanState = stateObj?.state ?? '0';
+        const unit = stateObj?.attributes.unit_of_measurement ?? '';
+
         // Check if numeric > 0 or "on"
         const isSpinning = fanState === 'on' || (parseFloat(fanState) > 0);
 
-        // Render a 3-blade fan with a central hub
+        // Render a 3-blade fan with a central hub and speed display
         return svg`
             <g transform="translate(${x}, ${y})">
+                <!-- Speed Display above fan -->
+                <text x="0" y="-25" font-size="10" text-anchor="middle" fill="#555" font-weight="bold">${fanState}${unit}</text>
+                
                 <g class="${isSpinning ? 'fan-spin' : ''}" style="transform-origin: 0 0;">
                     <circle cx="0" cy="0" r="20" fill="white" stroke="${color}" stroke-width="2"/>
                     <g fill="${color}" opacity="0.9">

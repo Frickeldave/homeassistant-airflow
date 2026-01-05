@@ -75,6 +75,15 @@ export class AirflowCardEditor extends LitElement {
                 </div>
                  <div class="option">
                     <ha-entity-picker
+                         .hass=${this.hass}
+                         .value=${this._config.entity_level}
+                         .configValue=${'entity_level'}
+                         label="Fan Level Sensor (Optional, 0-10)"
+                         @value-changed=${this._valueChanged}
+                    ></ha-entity-picker>
+                </div>
+                 <div class="option">
+                    <ha-entity-picker
                          .hass=\${this.hass}
                          .value=\${this._config.entity_efficiency}
                          .configValue=\${'entity_efficiency'}
