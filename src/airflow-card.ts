@@ -85,6 +85,14 @@ export class AirflowCard extends LitElement {
             <style>
                 .fan-spin { animation: spin 2s linear infinite; }
                 @keyframes spin { 100% { transform: rotate(360deg); } }
+                
+                .flow-line {
+                    stroke-dasharray: 10, 20;
+                    animation: flow 1s linear infinite;
+                }
+                @keyframes flow {
+                    to { stroke-dashoffset: -30; }
+                }
             </style>
          </defs>
 
@@ -94,18 +102,24 @@ export class AirflowCard extends LitElement {
          <!-- Heat Exchanger (Diamond shape in middle) -->
          <path d="M ${cx} ${cy - 80} L ${cx + 80} ${cy} L ${cx} ${cy + 80} L ${cx - 80} ${cy} Z" fill="#eee" stroke="#999" stroke-width="2" />
          
-         <!-- Ducts & Arrows -->
+         <!-- Ducts & Arrows (Static) -->
+         <path d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 50} ${cy - 40}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
+         <path d="M ${cx + 50} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
+         <path d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 50} ${cy - 40}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
+         <path d="M ${cx - 50} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="#ddd" stroke-width="12" stroke-linecap="round"/>
+
+         <!-- Animated Airflow Lines -->
          <!-- Outdoor (Left Top) -> Heat Exchanger -->
-         <path d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 50} ${cy - 40}" fill="none" stroke="${colorOutdoor}" stroke-width="10" />
+         <path class="flow-line" d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 50} ${cy - 40}" fill="none" stroke="${colorOutdoor}" stroke-width="10" stroke-linecap="round" />
          
          <!-- Supply (Right Bottom) <- Heat Exchanger -->
-         <path d="M ${cx + 50} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${colorFresh}" stroke-width="10" />
+         <path class="flow-line" d="M ${cx + 50} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${colorFresh}" stroke-width="10" stroke-linecap="round" />
 
          <!-- Extract (Right Top) -> Heat Exchanger -->
-         <path d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 50} ${cy - 40}" fill="none" stroke="${colorStale}" stroke-width="10" />
+         <path class="flow-line" d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 50} ${cy - 40}" fill="none" stroke="${colorStale}" stroke-width="10" stroke-linecap="round" />
 
          <!-- Exhaust (Left Bottom) <- Heat Exchanger -->
-         <path d="M ${cx - 50} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${colorExhaust}" stroke-width="10" />
+         <path class="flow-line" d="M ${cx - 50} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${colorExhaust}" stroke-width="10" stroke-linecap="round" />
 
          <!-- Port Boxes (Label + Temperature) -->
          <!-- Top Boxes: Positioned inside the frame, above duct lines -->
