@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airflow Card Demo</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #fafafa;
+            padding: 20px;
+        }
+
+        ha-card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+            display: block;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+    <script type="module" src="/src/airflow-card.ts"></script>
+</head>
+
+<body>
+    <h1>Airflow Card Demo</h1>
+    <airflow-card id="demo-card"></airflow-card>
+
+    <script>
+        customElements.whenDefined('airflow-card').then(() => {
+            const card = document.getElementById('demo-card');
+
+            // Mock hass object
+            const hass = {
+                states: {
+                    'sensor.temp_supply': { state: '21.5', attributes: { unit_of_measurement: '°C' } },
+                    'sensor.temp_extract': { state: '22.0', attributes: { unit_of_measurement: '°C' } },
+                    'sensor.temp_outdoor': { state: '5.0', attributes: { unit_of_measurement: '°C' } },
+                    'sensor.temp_exhaust': { state: '8.0', attributes: { unit_of_measurement: '°C' } },
+                    'sensor.fan_supply': { state: '1200', attributes: {} },
+                    'sensor.fan_extract': { state: '1200', attributes: {} },
+                    'sensor.efficiency': { state: '85', attributes: { unit_of_measurement: '%' } },
+                    'binary_sensor.bypass': { state: 'off', attributes: {} },
+                }
+            };
+
+            const config = {
+                type: 'custom:airflow-card',
+                name: 'Ventilation Demo',
+                entity_temp_supply: 'sensor.temp_supply',
+                entity_temp_extract: 'sensor.temp_extract',
+                entity_temp_outdoor: 'sensor.temp_outdoor',
+                entity_temp_exhaust: 'sensor.temp_exhaust',
+                entity_fan_supply: 'sensor.fan_supply',
+                entity_fan_extract: 'sensor.fan_extract',
+                entity_efficiency: 'sensor.efficiency',
+                entity_bypass: 'binary_sensor.bypass'
+            };
+
+            card.setConfig(config);
+            card.hass = hass;
+        });
+    </script>
+</body>
+
+</html>
