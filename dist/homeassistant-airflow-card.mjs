@@ -813,19 +813,19 @@ let D = class extends w {
          <!-- Animated Airflow Lines -->
          <!-- Path 1: Outdoor (Left Top) -> Supply (Right Bottom) -->
          <!-- Entry -->
-         <path class="flow-line" d="M ${50} ${165} L ${240} ${165}" fill="none" stroke="${a}" stroke-width="8" stroke-linecap="round" />
+         <path class="flow-line" d="M ${50} ${165} L ${240} ${165} L ${260} ${185}" fill="none" stroke="${a}" stroke-width="8" stroke-linecap="round" />
          <!-- Crossing (Inside Heat Exchanger) - Thinner at 45 deg -->
-         <path class="flow-line-inner" d="M ${240} ${165} L ${360} ${285}" fill="none" stroke="${i}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+         <path class="flow-line-inner" d="M ${260} ${185} L ${340} ${265}" fill="none" stroke="${i}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
          <!-- Exit -->
-         <path class="flow-line" d="M ${360} ${285} L ${550} ${285}" fill="none" stroke="${i}" stroke-width="8" stroke-linecap="round" />
+         <path class="flow-line" d="M ${340} ${265} L ${360} ${285} L ${550} ${285}" fill="none" stroke="${i}" stroke-width="8" stroke-linecap="round" />
 
          <!-- Path 2: Extract (Right Top) -> Exhaust (Left Bottom) -->
          <!-- Entry -->
-         <path class="flow-line" d="M ${550} ${165} L ${360} ${165}" fill="none" stroke="${o}" stroke-width="8" stroke-linecap="round" />
+         <path class="flow-line" d="M ${550} ${165} L ${360} ${165} L ${340} ${185}" fill="none" stroke="${o}" stroke-width="8" stroke-linecap="round" />
          <!-- Crossing (Inside Heat Exchanger) - Thinner at 45 deg -->
-         <path class="flow-line-inner" d="M ${360} ${165} L ${240} ${285}" fill="none" stroke="${r}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+         <path class="flow-line-inner" d="M ${340} ${185} L ${260} ${265}" fill="none" stroke="${r}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
          <!-- Exit -->
-         <path class="flow-line" d="M ${240} ${285} L ${50} ${285}" fill="none" stroke="${r}" stroke-width="8" stroke-linecap="round" />
+         <path class="flow-line" d="M ${260} ${265} L ${240} ${285} L ${50} ${285}" fill="none" stroke="${r}" stroke-width="8" stroke-linecap="round" />
 
          <!-- Port Boxes (Label + Temperature) -->
          <!-- Top Boxes: Positioned inside the frame, above duct lines -->
