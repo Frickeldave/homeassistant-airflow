@@ -46,7 +46,6 @@ export class AirflowCard extends LitElement {
           <div class="drawing-container">
             ${this.renderDrawing()}
           </div>
-          ${this.renderInfo()}
         </div>
       </ha-card>
     `;
@@ -80,6 +79,16 @@ export class AirflowCard extends LitElement {
                     <feMergeNode in="SourceGraphic"/>
                 </feMerge>
             </filter>
+
+            <linearGradient id="gradOutdoorSupply" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="${colorOutdoor}" />
+                <stop offset="100%" stop-color="${colorFresh}" />
+            </linearGradient>
+
+            <linearGradient id="gradExtractExhaust" x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="${colorStale}" />
+                <stop offset="100%" stop-color="${colorExhaust}" />
+            </linearGradient>
             
             <!-- Fan Animation -->
             <style>
@@ -116,16 +125,16 @@ export class AirflowCard extends LitElement {
          <!-- Path 1: Outdoor (Left Top) -> Supply (Right Bottom) -->
          <!-- Entry -->
          <path class="flow-line" d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 40} ${cy - 40}" fill="none" stroke="${colorOutdoor}" stroke-width="8" stroke-linecap="round" />
-         <!-- Crossing (Inside Heat Exchanger) - Thinner at 45 deg -->
-         <path class="flow-line-inner" d="M ${cx - 40} ${cy - 40} L ${cx + 40} ${cy + 40}" fill="none" stroke="${colorFresh}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+         <!-- Crossing (Inside Heat Exchanger) - Thinner at 45 deg with Gradient -->
+         <path class="flow-line-inner" d="M ${cx - 40} ${cy - 40} L ${cx + 40} ${cy + 40}" fill="none" stroke="url(#gradOutdoorSupply)" stroke-width="4" stroke-linecap="round" opacity="0.8" />
          <!-- Exit -->
          <path class="flow-line" d="M ${cx + 40} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${colorFresh}" stroke-width="8" stroke-linecap="round" />
 
          <!-- Path 2: Extract (Right Top) -> Exhaust (Left Bottom) -->
          <!-- Entry -->
          <path class="flow-line" d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 40} ${cy - 40}" fill="none" stroke="${colorStale}" stroke-width="8" stroke-linecap="round" />
-         <!-- Crossing (Inside Heat Exchanger) - Thinner at 45 deg -->
-         <path class="flow-line-inner" d="M ${cx + 40} ${cy - 40} L ${cx - 40} ${cy + 40}" fill="none" stroke="${colorExhaust}" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+         <!-- Crossing (Inside Heat Exchanger) - Thinner at 45 deg with Gradient -->
+         <path class="flow-line-inner" d="M ${cx + 40} ${cy - 40} L ${cx - 40} ${cy + 40}" fill="none" stroke="url(#gradExtractExhaust)" stroke-width="4" stroke-linecap="round" opacity="0.8" />
          <!-- Exit -->
          <path class="flow-line" d="M ${cx - 40} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${colorExhaust}" stroke-width="8" stroke-linecap="round" />
 
@@ -198,42 +207,23 @@ export class AirflowCard extends LitElement {
         // Check if numeric > 0 or "on"
         const isSpinning = fanState === 'on' || (parseFloat(fanState) > 0);
 
-        // Dynamic speed based on RPM could be added here, for now just spin
-        // We separate translation (SVG attribute) and rotation (CSS) to avoid conflicts
-        // Inner group spins around its center (0,0)
+        // Render a 3-blade fan with a central hub
         return svg`
             <g transform="translate(${x}, ${y})">
                 <g class="${isSpinning ? 'fan-spin' : ''}" style="transform-origin: 0 0;">
                     <circle cx="0" cy="0" r="20" fill="white" stroke="${color}" stroke-width="2"/>
-                    <path d="M 0 -18 L 10 -10 L 18 0 L 10 10 L 0 18 L -10 10 L -18 0 L -10 -10 Z" fill="${color}" opacity="0.7"/>
+                    <g fill="${color}" opacity="0.9">
+                        <path d="M0,0 C-10,-10 -12,-18 0,-18 C12,-18 10,-10 0,0 Z" />
+                        <path d="M0,0 C-10,-10 -12,-18 0,-18 C12,-18 10,-10 0,0 Z" transform="rotate(120)" />
+                        <path d="M0,0 C-10,-10 -12,-18 0,-18 C12,-18 10,-10 0,0 Z" transform="rotate(240)" />
+                    </g>
+                    <circle cx="0" cy="0" r="4" fill="white" stroke="${color}" stroke-width="1"/>
                 </g>
             </g>
         `;
     }
 
-    private renderTemp(x: number, y: number, entityId: string | undefined): SVGTemplateResult {
-        const state = entityId ? (this.hass.states[entityId]?.state ?? 'N/A') : '-';
-        const unit = entityId ? (this.hass.states[entityId]?.attributes.unit_of_measurement ?? '°C') : '';
-        return svg`
-            <text x="${x}" y="${y}" font-size="14" text-anchor="middle" fill="#333">${state}${unit}</text>
-        `;
-    }
 
-    private renderInfo() {
-        // Helper to safely get state
-        const getState = (entityId: string | undefined) => {
-            return entityId ? (this.hass.states[entityId]?.state ?? 'N/A') : '-';
-        };
-
-        return html`
-          <div class="stats">
-              <div>Supply: ${getState(this.config.entity_temp_supply)}°C</div>
-              <div>Extract: ${getState(this.config.entity_temp_extract)}°C</div>
-              <div>Outdoor: ${getState(this.config.entity_temp_outdoor)}°C</div>
-              <div>Exhaust: ${getState(this.config.entity_temp_exhaust)}°C</div>
-          </div>
-      `;
-    }
 
     static get styles() {
         return css`
@@ -248,13 +238,7 @@ export class AirflowCard extends LitElement {
         max-width: 500px;
         margin-bottom: 16px;
       }
-      .stats {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 8px;
-          width: 100%;
-          font-size: 0.9em;
-      }
+
     `;
     }
 }
