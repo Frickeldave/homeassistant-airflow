@@ -2,6 +2,17 @@
 
 A custom Lovelace card to visualize ventilation systems (Airflow).
 
+## Airflow Terminology
+
+The following standard terminology is used for the air paths:
+
+| Term            | German    | Description                 | Path                          |
+| --------------- | --------- | --------------------------- | ----------------------------- |
+| **Outdoor Air** | Außenluft | Fresh air from outside      | Outside (Top Left) -> Unit    |
+| **Supply Air**  | Zuluft    | Fresh air supplied to rooms | Unit -> Rooms (Bottom Right)  |
+| **Extract Air** | Abluft    | Stale used air from rooms   | Rooms (Top Right) -> Unit     |
+| **Exhaust Air** | Fortluft  | Stale air blown outside     | Unit -> Outside (Bottom Left) |
+
 ## Features
 - Visualization of Supply, Extract, Exhaust, and Outdoor airflows.
 - Animated fans based on state or RPM.

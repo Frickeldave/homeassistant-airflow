@@ -83,7 +83,7 @@ export class AirflowCard extends LitElement {
             
             <!-- Fan Animation -->
             <style>
-                .fan-spin { transform-origin: center; animation: spin 2s linear infinite; }
+                .fan-spin { animation: spin 2s linear infinite; }
                 @keyframes spin { 100% { transform: rotate(360deg); } }
             </style>
          </defs>
@@ -92,24 +92,24 @@ export class AirflowCard extends LitElement {
          <rect x="${cx - 150}" y="${cy - 100}" width="300" height="200" rx="10" fill="white" stroke="#333" stroke-width="2" filter="url(#dropShadow)" />
          
          <!-- Heat Exchanger (Diamond shape in middle) -->
-         <path d="M ${cx} ${cy-70} L ${cx+70} ${cy} L ${cx} ${cy+70} L ${cx-70} ${cy} Z" fill="#eee" stroke="#999" stroke-width="2" />
+         <path d="M ${cx} ${cy - 70} L ${cx + 70} ${cy} L ${cx} ${cy + 70} L ${cx - 70} ${cy} Z" fill="#eee" stroke="#999" stroke-width="2" />
          
          <!-- Ducts & Arrows -->
-         <!-- Outdoor (Left Bottom) -> Heat Exchanger -->
-         <path d="M ${cx-150} ${cy+50} L ${cx-70} ${cy+50} L ${cx-50} ${cy+30}" fill="none" stroke="${colorOutdoor}" stroke-width="8" />
-         <text x="${cx-130}" y="${cy+80}" fill="${colorOutdoor}" font-size="12">Outdoor</text>
+         <!-- Outdoor (Left Top) -> Heat Exchanger -->
+         <path d="M ${cx - 150} ${cy - 50} L ${cx - 70} ${cy - 50} L ${cx - 50} ${cy - 30}" fill="none" stroke="${colorOutdoor}" stroke-width="8" />
+         <text x="${cx - 130}" y="${cy - 80}" fill="${colorOutdoor}" font-size="12">Outdoor</text>
          
          <!-- Supply (Right Bottom) <- Heat Exchanger -->
-         <path d="M ${cx+50} ${cy+30} L ${cx+70} ${cy+50} L ${cx+150} ${cy+50}" fill="none" stroke="${colorFresh}" stroke-width="8" />
-         <text x="${cx+100}" y="${cy+80}" fill="${colorFresh}" font-size="12">Supply</text>
+         <path d="M ${cx + 50} ${cy + 30} L ${cx + 70} ${cy + 50} L ${cx + 150} ${cy + 50}" fill="none" stroke="${colorFresh}" stroke-width="8" />
+         <text x="${cx + 100}" y="${cy + 80}" fill="${colorFresh}" font-size="12">Supply</text>
 
          <!-- Extract (Right Top) -> Heat Exchanger -->
-         <path d="M ${cx+150} ${cy-50} L ${cx+70} ${cy-50} L ${cx+50} ${cy-30}" fill="none" stroke="${colorStale}" stroke-width="8" />
-         <text x="${cx+100}" y="${cy-80}" fill="${colorStale}" font-size="12">Extract</text>
+         <path d="M ${cx + 150} ${cy - 50} L ${cx + 70} ${cy - 50} L ${cx + 50} ${cy - 30}" fill="none" stroke="${colorStale}" stroke-width="8" />
+         <text x="${cx + 100}" y="${cy - 80}" fill="${colorStale}" font-size="12">Extract</text>
 
-         <!-- Exhaust (Left Top) <- Heat Exchanger -->
-         <path d="M ${cx-50} ${cy-30} L ${cx-70} ${cy-50} L ${cx-150} ${cy-50}" fill="none" stroke="${colorExhaust}" stroke-width="8" />
-         <text x="${cx-130}" y="${cy-80}" fill="${colorExhaust}" font-size="12">Exhaust</text>
+         <!-- Exhaust (Left Bottom) <- Heat Exchanger -->
+         <path d="M ${cx - 50} ${cy + 30} L ${cx - 70} ${cy + 50} L ${cx - 150} ${cy + 50}" fill="none" stroke="${colorExhaust}" stroke-width="8" />
+         <text x="${cx - 130}" y="${cy + 80}" fill="${colorExhaust}" font-size="12">Exhaust</text>
 
          <!-- Fans -->
          ${this.renderFan(cx + 100, cy + 50, this.config.entity_fan_supply, colorFresh)}
@@ -119,13 +119,14 @@ export class AirflowCard extends LitElement {
          ${this.renderBypass(cx, cy)}
 
          <!-- Efficiency Text (Center) -->
+         <rect x="${cx - 25}" y="${cy - 15}" width="50" height="30" fill="white" opacity="0.8" rx="5" />
          ${this.renderEfficiency(cx, cy)}
 
          <!-- Overlay Text (Temperatures) -->
-         ${this.renderTemp(cx-110, cy+40, this.config.entity_temp_outdoor)}
-         ${this.renderTemp(cx+110, cy+40, this.config.entity_temp_supply)}
-         ${this.renderTemp(cx+110, cy-60, this.config.entity_temp_extract)}
-         ${this.renderTemp(cx-110, cy-60, this.config.entity_temp_exhaust)}
+         ${this.renderTemp(cx - 110, cy - 60, this.config.entity_temp_outdoor)}
+         ${this.renderTemp(cx + 110, cy + 40, this.config.entity_temp_supply)}
+         ${this.renderTemp(cx + 110, cy - 60, this.config.entity_temp_extract)}
+         ${this.renderTemp(cx - 110, cy + 40, this.config.entity_temp_exhaust)}
 
        </svg>
      `;
@@ -139,13 +140,11 @@ export class AirflowCard extends LitElement {
 
         if (!isOpen) return svg``;
 
-        // Draw a path bypassing the heat exchanger (conceptual)
-        // From outdoor (left bottom) to Supply (right bottom) directly? 
-        // Or usually it bypasses the heat recovery for the supply air.
-        // Let's draw a curved arrow over the diamond
+        // Bypass: Outdoor (Left Top) -> Supply (Right Bottom)
+        // Draw a path bypassing the heat exchanger
         return svg`
-            <path d="M ${cx-60} ${cy+40} Q ${cx} ${cy+90} ${cx+60} ${cy+40}" fill="none" stroke="#2196F3" stroke-width="4" stroke-dasharray="5,5" />
-            <text x="${cx}" y="${cy+80}" font-size="10" text-anchor="middle" fill="#2196F3">BYPASS</text>
+            <path d="M ${cx - 60} ${cy - 40} Q ${cx} ${cy - 90} ${cx + 60} ${cy - 40}" fill="none" stroke="#2196F3" stroke-width="4" stroke-dasharray="5,5" />
+            <text x="${cx}" y="${cy - 80}" font-size="10" text-anchor="middle" fill="#2196F3">BYPASS</text>
         `;
     }
 
@@ -154,7 +153,7 @@ export class AirflowCard extends LitElement {
         const state = this.hass.states[this.config.entity_efficiency]?.state ?? '-';
         return svg`
             <text x="${cx}" y="${cy}" font-size="16" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="#444">${state}%</text>
-            <text x="${cx}" y="${cy+15}" font-size="8" text-anchor="middle" fill="#666">Efficiency</text>
+            <text x="${cx}" y="${cy + 15}" font-size="8" text-anchor="middle" fill="#666">Efficiency</text>
         `;
     }
 
@@ -164,10 +163,14 @@ export class AirflowCard extends LitElement {
         const isSpinning = fanState === 'on' || (parseFloat(fanState) > 0);
 
         // Dynamic speed based on RPM could be added here, for now just spin
+        // We separate translation (SVG attribute) and rotation (CSS) to avoid conflicts
+        // Inner group spins around its center (0,0)
         return svg`
-            <g transform="translate(${x}, ${y})" class="${isSpinning ? 'fan-spin' : ''}">
-                <circle cx="0" cy="0" r="20" fill="white" stroke="${color}" stroke-width="2"/>
-                <path d="M 0 -18 L 10 -10 L 18 0 L 10 10 L 0 18 L -10 10 L -18 0 L -10 -10 Z" fill="${color}" opacity="0.7"/>
+            <g transform="translate(${x}, ${y})">
+                <g class="${isSpinning ? 'fan-spin' : ''}" style="transform-origin: 0 0;">
+                    <circle cx="0" cy="0" r="20" fill="white" stroke="${color}" stroke-width="2"/>
+                    <path d="M 0 -18 L 10 -10 L 18 0 L 10 10 L 0 18 L -10 10 L -18 0 L -10 -10 Z" fill="${color}" opacity="0.7"/>
+                </g>
             </g>
         `;
     }
