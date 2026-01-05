@@ -70,8 +70,25 @@ export class AirflowCard extends LitElement {
         const colorExhaust = '#F44336'; // Red - Exhaust/Fortluft
         const colorOutdoor = '#2196F3'; // Blue - Outdoor/Außenluft
 
+        // Calculate dynamic speeds
+        const levelEntity = this.config.entity_level;
+        const levelState = levelEntity ? parseFloat(this.hass.states[levelEntity]?.state ?? '0') : 1;
+        const min = this.config.level_min ?? 0;
+        const max = this.config.level_max ?? 4;
+
+        // Normalize level (0 to 1)
+        const range = max - min;
+        const normalizedLevel = range > 0 ? Math.max(0, Math.min(1, (levelState - min) / range)) : 0.5;
+
+        // Map normalized level to durations (lower is faster)
+        // Fan: 3s (slow) to 0.4s (fast)
+        // Flow: 2s (slow) to 0.2s (fast)
+        const fanDuration = levelState > 0 ? (3 - (normalizedLevel * 2.6)).toFixed(2) : 0;
+        const flowDuration = levelState > 0 ? (2 - (normalizedLevel * 1.8)).toFixed(2) : 0;
+
         return svg`
-       <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+       <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" 
+            style="--fan-speed: ${fanDuration}s; --flow-speed: ${flowDuration}s;">
          <defs>
             <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
@@ -96,16 +113,21 @@ export class AirflowCard extends LitElement {
             
             <!-- Fan Animation -->
             <style>
-                .fan-spin { animation: spin 2s linear infinite; }
+                .fan-spin { 
+                    animation: spin var(--fan-speed, 2s) linear infinite;
+                    animation-play-state: ${fanDuration === 0 ? 'paused' : 'running'};
+                }
                 @keyframes spin { 100% { transform: rotate(360deg); } }
                 
                 .flow-line {
                     stroke-dasharray: 10, 15;
-                    animation: flow 0.8s linear infinite;
+                    animation: flow var(--flow-speed, 0.8s) linear infinite;
+                    display: ${flowDuration === 0 ? 'none' : 'block'};
                 }
                 .flow-line-inner {
                     stroke-dasharray: 4, 8;
-                    animation: flow 0.8s linear infinite;
+                    animation: flow var(--flow-speed, 0.8s) linear infinite;
+                    display: ${flowDuration === 0 ? 'none' : 'block'};
                 }
                 @keyframes flow {
                     to { stroke-dashoffset: -25; }
