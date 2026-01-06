@@ -3,7 +3,7 @@
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const N = globalThis, Z = N.ShadowRoot && (N.ShadyCSS === void 0 || N.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, q = Symbol(), ot = /* @__PURE__ */ new WeakMap();
+const U = globalThis, Z = U.ShadowRoot && (U.ShadyCSS === void 0 || U.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, q = Symbol(), ot = /* @__PURE__ */ new WeakMap();
 let gt = class {
   constructor(t, e, i) {
     if (this._$cssResult$ = !0, i !== q) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
@@ -32,7 +32,7 @@ const Pt = (n) => new gt(typeof n == "string" ? n : n + "", void 0, q), vt = (n,
 }, kt = (n, t) => {
   if (Z) n.adoptedStyleSheets = t.map((e) => e instanceof CSSStyleSheet ? e : e.styleSheet);
   else for (const e of t) {
-    const i = document.createElement("style"), s = N.litNonce;
+    const i = document.createElement("style"), s = U.litNonce;
     s !== void 0 && i.setAttribute("nonce", s), i.textContent = e.cssText, n.appendChild(i);
   }
 }, rt = Z ? (n) => n : (n) => n instanceof CSSStyleSheet ? ((t) => {
@@ -45,7 +45,7 @@ const Pt = (n) => new gt(typeof n == "string" ? n : n + "", void 0, q), vt = (n,
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { is: Mt, defineProperty: Ot, getOwnPropertyDescriptor: Lt, getOwnPropertyNames: Tt, getOwnPropertySymbols: Ut, getPrototypeOf: Nt } = Object, _ = globalThis, at = _.trustedTypes, Ht = at ? at.emptyScript : "", j = _.reactiveElementPolyfillSupport, k = (n, t) => n, H = { toAttribute(n, t) {
+const { is: Mt, defineProperty: Ot, getOwnPropertyDescriptor: Lt, getOwnPropertyNames: Nt, getOwnPropertySymbols: Tt, getPrototypeOf: Ut } = Object, _ = globalThis, at = _.trustedTypes, Ht = at ? at.emptyScript : "", j = _.reactiveElementPolyfillSupport, k = (n, t) => n, H = { toAttribute(n, t) {
   switch (t) {
     case Boolean:
       n = n ? Ht : null;
@@ -104,13 +104,13 @@ let A = class extends HTMLElement {
   }
   static _$Ei() {
     if (this.hasOwnProperty(k("elementProperties"))) return;
-    const t = Nt(this);
+    const t = Ut(this);
     t.finalize(), t.l !== void 0 && (this.l = [...t.l]), this.elementProperties = new Map(t.elementProperties);
   }
   static finalize() {
     if (this.hasOwnProperty(k("finalized"))) return;
     if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(k("properties"))) {
-      const e = this.properties, i = [...Tt(e), ...Ut(e)];
+      const e = this.properties, i = [...Nt(e), ...Tt(e)];
       for (const s of i) this.createProperty(s, e[s]);
     }
     const t = this[Symbol.metadata];
@@ -303,13 +303,13 @@ const Ft = (n, t) => {
   }
   return [bt(n, r + (n[e] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), i];
 };
-class T {
+class N {
   constructor({ strings: t, _$litType$: e }, i) {
     let s;
     this.parts = [];
     let r = 0, o = 0;
     const a = t.length - 1, l = this.parts, [c, d] = Ft(t, e);
-    if (this.el = T.createElement(c, i), v.currentNode = this.el.content, e === 2 || e === 3) {
+    if (this.el = N.createElement(c, i), v.currentNode = this.el.content, e === 2 || e === 3) {
       const h = this.el.content.firstChild;
       h.replaceWith(...h.childNodes);
     }
@@ -364,7 +364,7 @@ class Dt {
     for (; l !== void 0; ) {
       if (o === l.index) {
         let c;
-        l.type === 2 ? c = new U(r, r.nextSibling, this, t) : l.type === 1 ? c = new l.ctor(r, l.name, l.strings, this, t) : l.type === 6 && (c = new It(r, this, t)), this._$AV.push(c), l = i[++a];
+        l.type === 2 ? c = new T(r, r.nextSibling, this, t) : l.type === 1 ? c = new l.ctor(r, l.name, l.strings, this, t) : l.type === 6 && (c = new It(r, this, t)), this._$AV.push(c), l = i[++a];
       }
       o !== (l == null ? void 0 : l.index) && (r = v.nextNode(), o++);
     }
@@ -375,7 +375,7 @@ class Dt {
     for (const i of this._$AV) i !== void 0 && (i.strings !== void 0 ? (i._$AI(t, i, e), e += i.strings.length - 2) : i._$AI(t[e])), e++;
   }
 }
-class U {
+class T {
   get _$AU() {
     var t;
     return ((t = this._$AM) == null ? void 0 : t._$AU) ?? this._$Cv;
@@ -408,7 +408,7 @@ class U {
   }
   $(t) {
     var r;
-    const { values: e, _$litType$: i } = t, s = typeof i == "number" ? this._$AC(t) : (i.el === void 0 && (i.el = T.createElement(bt(i.h, i.h[0]), this.options)), i);
+    const { values: e, _$litType$: i } = t, s = typeof i == "number" ? this._$AC(t) : (i.el === void 0 && (i.el = N.createElement(bt(i.h, i.h[0]), this.options)), i);
     if (((r = this._$AH) == null ? void 0 : r._$AD) === s) this._$AH.p(e);
     else {
       const o = new Dt(s, this), a = o.u(this.options);
@@ -417,13 +417,13 @@ class U {
   }
   _$AC(t) {
     let e = $t.get(t.strings);
-    return e === void 0 && $t.set(t.strings, e = new T(t)), e;
+    return e === void 0 && $t.set(t.strings, e = new N(t)), e;
   }
   k(t) {
     J(this._$AH) || (this._$AH = [], this._$AR());
     const e = this._$AH;
     let i, s = 0;
-    for (const r of t) s === e.length ? e.push(i = new U(this.O(O()), this.O(O()), this, this.options)) : i = e[s], i._$AI(r), s++;
+    for (const r of t) s === e.length ? e.push(i = new T(this.O(O()), this.O(O()), this, this.options)) : i = e[s], i._$AI(r), s++;
     s < e.length && (this._$AR(i && i._$AB.nextSibling, s), e.length = s);
   }
   _$AR(t = this._$AA.nextSibling, e) {
@@ -505,13 +505,13 @@ class It {
   }
 }
 const W = M.litHtmlPolyfillSupport;
-W == null || W(T, U), (M.litHtmlVersions ?? (M.litHtmlVersions = [])).push("3.3.2");
+W == null || W(N, T), (M.litHtmlVersions ?? (M.litHtmlVersions = [])).push("3.3.2");
 const Wt = (n, t, e) => {
   const i = (e == null ? void 0 : e.renderBefore) ?? t;
   let s = i._$litPart$;
   if (s === void 0) {
     const r = (e == null ? void 0 : e.renderBefore) ?? null;
-    i._$litPart$ = s = new U(t.insertBefore(O(), r), r, void 0, e ?? {});
+    i._$litPart$ = s = new T(t.insertBefore(O(), r), r, void 0, e ?? {});
   }
   return s._$AI(n), s;
 };
@@ -636,6 +636,14 @@ let F = class extends b {
     return !this.hass || !this._config ? R`` : R`
             <div class="card-config">
                 <div class="option">
+                    <ha-textfield
+                        label="Name (Optional)"
+                        .value=${this._config.name ?? ""}
+                        .configValue=${"name"}
+                        @input=${this._valueChanged}
+                    ></ha-textfield>
+                </div>
+                <div class="option">
                     <ha-select
                         label="Language"
                         .value=${this._config.language ?? "en"}
@@ -649,57 +657,57 @@ let F = class extends b {
                 </div>
                 <div class="option">
                     <ha-entity-picker
-                        .hass=\${this.hass}
-                        .value=\${this._config.entity_temp_supply}
-                        .configValue=\${'entity_temp_supply'}
+                        .hass=${this.hass}
+                        .value=${this._config.entity_temp_supply}
+                        .configValue=${"entity_temp_supply"}
                         label="Supply Temperature (Zuluft)"
-                        @value-changed=\${this._valueChanged}
+                        @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
-                        .hass=\${this.hass}
-                        .value=\${this._config.entity_temp_extract}
-                        .configValue=\${'entity_temp_extract'}
+                        .hass=${this.hass}
+                        .value=${this._config.entity_temp_extract}
+                        .configValue=${"entity_temp_extract"}
                         label="Extract Temperature (Abluft)"
-                        @value-changed=\${this._valueChanged}
+                        @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
-                        .hass=\${this.hass}
-                        .value=\${this._config.entity_temp_exhaust}
-                        .configValue=\${'entity_temp_exhaust'}
+                        .hass=${this.hass}
+                        .value=${this._config.entity_temp_exhaust}
+                        .configValue=${"entity_temp_exhaust"}
                         label="Exhaust Temperature (Fortluft)"
-                        @value-changed=\${this._valueChanged}
+                        @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
-                         .hass=\${this.hass}
-                         .value=\${this._config.entity_temp_outdoor}
-                         .configValue=\${'entity_temp_outdoor'}
+                         .hass=${this.hass}
+                         .value=${this._config.entity_temp_outdoor}
+                         .configValue=${"entity_temp_outdoor"}
                          label="Outdoor Temperature (Außenluft)"
-                         @value-changed=\${this._valueChanged}
+                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <!-- Fan Sensors -->
                  <div class="option">
                     <ha-entity-picker
-                         .hass=\${this.hass}
-                         .value=\${this._config.entity_fan_supply}
-                         .configValue=\${'entity_fan_supply'}
+                         .hass=${this.hass}
+                         .value=${this._config.entity_fan_supply}
+                         .configValue=${"entity_fan_supply"}
                          label="Supply Fan RPM (Optional)"
-                         @value-changed=\${this._valueChanged}
+                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
-                         .hass=\${this.hass}
-                         .value=\${this._config.entity_fan_extract}
-                         .configValue=\${'entity_fan_extract'}
+                         .hass=${this.hass}
+                         .value=${this._config.entity_fan_extract}
+                         .configValue=${"entity_fan_extract"}
                          label="Extract Fan RPM (Optional)"
-                         @value-changed=\${this._valueChanged}
+                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                  <div class="option">
@@ -747,11 +755,11 @@ let F = class extends b {
                 </div>
                  <div class="option">
                     <ha-entity-picker
-                         .hass=\${this.hass}
-                         .value=\${this._config.entity_bypass}
-                         .configValue=\${'entity_bypass'}
+                         .hass=${this.hass}
+                         .value=${this._config.entity_bypass}
+                         .configValue=${"entity_bypass"}
                          label="Bypass Entity (Optional)"
-                         @value-changed=\${this._valueChanged}
+                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
 

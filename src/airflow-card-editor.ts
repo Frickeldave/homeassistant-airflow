@@ -19,6 +19,14 @@ export class AirflowCardEditor extends LitElement {
         return html`
             <div class="card-config">
                 <div class="option">
+                    <ha-textfield
+                        label="Name (Optional)"
+                        .value=${this._config.name ?? ''}
+                        .configValue=${'name'}
+                        @input=${this._valueChanged}
+                    ></ha-textfield>
+                </div>
+                <div class="option">
                     <ha-select
                         label="Language"
                         .value=${this._config.language ?? 'en'}
@@ -32,57 +40,57 @@ export class AirflowCardEditor extends LitElement {
                 </div>
                 <div class="option">
                     <ha-entity-picker
-                        .hass=\${this.hass}
-                        .value=\${this._config.entity_temp_supply}
-                        .configValue=\${'entity_temp_supply'}
+                        .hass=${this.hass}
+                        .value=${this._config.entity_temp_supply}
+                        .configValue=${'entity_temp_supply'}
                         label="Supply Temperature (Zuluft)"
-                        @value-changed=\${this._valueChanged}
+                        @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
-                        .hass=\${this.hass}
-                        .value=\${this._config.entity_temp_extract}
-                        .configValue=\${'entity_temp_extract'}
+                        .hass=${this.hass}
+                        .value=${this._config.entity_temp_extract}
+                        .configValue=${'entity_temp_extract'}
                         label="Extract Temperature (Abluft)"
-                        @value-changed=\${this._valueChanged}
+                        @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
-                        .hass=\${this.hass}
-                        .value=\${this._config.entity_temp_exhaust}
-                        .configValue=\${'entity_temp_exhaust'}
+                        .hass=${this.hass}
+                        .value=${this._config.entity_temp_exhaust}
+                        .configValue=${'entity_temp_exhaust'}
                         label="Exhaust Temperature (Fortluft)"
-                        @value-changed=\${this._valueChanged}
+                        @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
-                         .hass=\${this.hass}
-                         .value=\${this._config.entity_temp_outdoor}
-                         .configValue=\${'entity_temp_outdoor'}
+                         .hass=${this.hass}
+                         .value=${this._config.entity_temp_outdoor}
+                         .configValue=${'entity_temp_outdoor'}
                          label="Outdoor Temperature (Außenluft)"
-                         @value-changed=\${this._valueChanged}
+                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <!-- Fan Sensors -->
                  <div class="option">
                     <ha-entity-picker
-                         .hass=\${this.hass}
-                         .value=\${this._config.entity_fan_supply}
-                         .configValue=\${'entity_fan_supply'}
+                         .hass=${this.hass}
+                         .value=${this._config.entity_fan_supply}
+                         .configValue=${'entity_fan_supply'}
                          label="Supply Fan RPM (Optional)"
-                         @value-changed=\${this._valueChanged}
+                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
-                         .hass=\${this.hass}
-                         .value=\${this._config.entity_fan_extract}
-                         .configValue=\${'entity_fan_extract'}
+                         .hass=${this.hass}
+                         .value=${this._config.entity_fan_extract}
+                         .configValue=${'entity_fan_extract'}
                          label="Extract Fan RPM (Optional)"
-                         @value-changed=\${this._valueChanged}
+                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                  <div class="option">
@@ -130,11 +138,11 @@ export class AirflowCardEditor extends LitElement {
                 </div>
                  <div class="option">
                     <ha-entity-picker
-                         .hass=\${this.hass}
-                         .value=\${this._config.entity_bypass}
-                         .configValue=\${'entity_bypass'}
+                         .hass=${this.hass}
+                         .value=${this._config.entity_bypass}
+                         .configValue=${'entity_bypass'}
                          label="Bypass Entity (Optional)"
-                         @value-changed=\${this._valueChanged}
+                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
 
