@@ -321,3 +321,11 @@ export class AirflowCard extends LitElement {
     `;
     }
 }
+
+(window as any).customCards = (window as any).customCards || [];
+(window as any).customCards.push({
+    type: 'airflow-card',
+    name: 'Airflow Card',
+    preview: true,
+    description: 'A card to visualize airflow and efficiency for ventilation systems.'
+});
