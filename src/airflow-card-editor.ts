@@ -16,12 +16,12 @@ export class AirflowCardEditor extends LitElement {
             return html``;
         }
 
-        // debug info with version 1.3
+        // debug info with version 1.4
         return html`
             <div class="card-config">
                 <div class="debug-box">
                     <strong>Editor Debug Info:</strong><br>
-                    Version: 1.3 (Native Select Dropdowns)<br>
+                    Version: 1.4 (HA Pickers + Colors)<br>
                     Config Name: ${this._config.name || 'None'}
                 </div>
 
@@ -47,9 +47,16 @@ export class AirflowCardEditor extends LitElement {
                 ${this.renderEntitySelect('entity_level', 'Fan Level Entity', 'sensor')}
                 ${this.renderEntitySelect('entity_efficiency', 'Efficiency Entity', 'sensor')}
 
-                <h3>Other</h3>
+                <h3>Bypass</h3>
                 ${this.renderEntitySelect('entity_bypass', 'Bypass Entity', 'binary_sensor,sensor')}
-                
+
+                <h3>Colors</h3>
+                ${this.renderColorSelect('color_outdoor', 'Outdoor Color (Default: Blue)')}
+                ${this.renderColorSelect('color_supply', 'Supply Color (Default: Green)')}
+                ${this.renderColorSelect('color_extract', 'Extract Color (Default: Amber)')}
+                ${this.renderColorSelect('color_exhaust', 'Exhaust Color (Default: Red)')}
+
+                <h3>Other</h3>
                 <div class="option">
                      <label>Manual Efficiency Calc (Checkbox)</label>
                      <input type="checkbox" 
@@ -63,13 +70,41 @@ export class AirflowCardEditor extends LitElement {
     }
 
     private renderEntitySelect(configValue: string, label: string, domains: string): TemplateResult {
+        if (!this._config) return html``;
+        const currentVal = (this._config as any)[configValue] || '';
+        const domainList = domains.split(',');
+
+        return html`
+            <div class="option">
+                <ha-entity-picker
+                    .hass=${this.hass}
+                    .value=${currentVal}
+                    .label=${label}
+                    .includeDomains=${domainList}
+                    @value-changed=${(e: CustomEvent) => this._updateConfig(configValue, e.detail.value)}
+                    allow-custom-entity
+                ></ha-entity-picker>
+            </div>
+        `;
+    }
+
+    private renderColorSelect(configValue: string, label: string): TemplateResult {
         const currentVal = (this._config as any)[configValue] || '';
 
-        // Filter entities from hass.states
-        const domainList = domains.split(',');
-        const entities = Object.keys(this.hass.states)
-            .filter(eid => domainList.some(d => eid.startsWith(d + '.')))
-            .sort();
+        // Define standard colors matching the card defaults + extras
+        const colors = [
+            { label: 'Blue (#2196F3)', value: '#2196F3' },
+            { label: 'Green (#4CAF50)', value: '#4CAF50' },
+            { label: 'Amber (#FFB300)', value: '#FFB300' },
+            { label: 'Red (#F44336)', value: '#F44336' },
+            { label: 'Grey (#9E9E9E)', value: '#9E9E9E' },
+            { label: 'Black (#000000)', value: '#000000' },
+            { label: 'White (#FFFFFF)', value: '#FFFFFF' }
+        ];
+
+        // If current value is set but not in list, add it dynamically so it's not lost
+        const found = colors.some(c => c.value === currentVal);
+        const options = found || !currentVal ? colors : [...colors, { label: `Custom (${currentVal})`, value: currentVal }];
 
         return html`
             <div class="option">
@@ -79,14 +114,11 @@ export class AirflowCardEditor extends LitElement {
                     @change=${(e: Event) => this._updateConfig(configValue, (e.target as HTMLSelectElement).value)}
                     class="select-input"
                 >
-                    <option value="" disabled ?selected=${currentVal === ''}>Select an entity...</option>
-                    ${entities.map(eid => html`
-                        <option value=${eid} ?selected=${eid === currentVal}>
-                            ${this.hass.states[eid].attributes.friendly_name || eid} (${eid})
-                        </option>
+                    <option value="" disabled ?selected=${!currentVal}>Select a color...</option>
+                    ${options.map(c => html`
+                        <option value=${c.value} ?selected=${c.value === currentVal}>${c.label}</option>
                     `)}
                 </select>
-                <div class="value-display">Selected: ${currentVal || 'None'}</div>
             </div>
         `;
     }
@@ -141,17 +173,13 @@ export class AirflowCardEditor extends LitElement {
                 color: var(--primary-text-color, black);
                 font-size: 14px;
             }
-            .value-display {
-                font-size: 10px;
-                color: #888;
-                margin-top: 2px;
-            }
             h3 {
                 font-size: 14px;
                 margin: 20px 0 10px 0;
                 border-bottom: 1px solid var(--divider-color, #eee);
                 padding-bottom: 4px;
             }
+            /* Colors for the Select options if needed, but browser handles typically */
         `;
     }
 }
