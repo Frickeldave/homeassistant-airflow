@@ -13,112 +13,143 @@ export class AirflowCardEditor extends LitElement {
 
     protected render(): TemplateResult {
         if (!this.hass || !this._config) {
-            return html`<div style="color: red; padding: 16px;">Editor Loading... (Hass: ${!!this.hass}, Config: ${!!this._config})</div>`;
+            return html``;
         }
 
+        // debug info with version 1.3
         return html`
             <div class="card-config">
-                <div style="background: #fff3e0; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ffb74d; color: #e65100; font-size: 13px;">
-                    <strong>Editor Safe Mode (v2.2)</strong><br>
-                    Since entity pickers failed to load, we are using stable text fields. 
-                    Please enter your entity IDs manually (e.g., <em>sensor.my_temp</em>).
+                <div class="debug-box">
+                    <strong>Editor Debug Info:</strong><br>
+                    Version: 1.3 (Native Select Dropdowns)<br>
+                    Config Name: ${this._config.name || 'None'}
                 </div>
 
                 <div class="option">
-                    <ha-textfield
-                        label="Display Name"
-                        .value=${this._config.name || ''}
-                        .configValue=${'name'}
-                        @input=${this._valueChanged}
-                    ></ha-textfield>
+                    <label>Name</label>
+                    <input 
+                        type="text" 
+                        .value=${this._config.name || ''} 
+                        @input=${(e: Event) => this._updateConfig('name', (e.target as HTMLInputElement).value)}
+                        class="text-input"
+                    />
                 </div>
 
-                <h3>Temperatures (Sensors)</h3>
-                <div class="grid">
-                    ${this.renderTextField('entity_temp_supply', 'Supply Temp (Zuluft)')}
-                    ${this.renderTextField('entity_temp_extract', 'Extract Temp (Abluft)')}
-                    ${this.renderTextField('entity_temp_exhaust', 'Exhaust Temp (Fortluft)')}
-                    ${this.renderTextField('entity_temp_outdoor', 'Outdoor Temp (Außenluft)')}
-                </div>
+                <h3>Temperatures</h3>
+                ${this.renderEntitySelect('entity_temp_supply', 'Supply Temperature (Zuluft)', 'sensor')}
+                ${this.renderEntitySelect('entity_temp_extract', 'Extract Temperature (Abluft)', 'sensor')}
+                ${this.renderEntitySelect('entity_temp_exhaust', 'Exhaust Temperature (Fortluft)', 'sensor')}
+                ${this.renderEntitySelect('entity_temp_outdoor', 'Outdoor Temperature (Außenluft)', 'sensor')}
 
                 <h3>Fans & Efficiency</h3>
-                <div class="grid">
-                    ${this.renderTextField('entity_fan_supply', 'Supply Fan (RPM)')}
-                    ${this.renderTextField('entity_fan_extract', 'Extract Fan (RPM)')}
-                    ${this.renderTextField('entity_level', 'Fan Level Entity')}
-                    ${this.renderTextField('entity_efficiency', 'Efficiency Entity')}
-                </div>
+                ${this.renderEntitySelect('entity_fan_supply', 'Supply Fan (RPM)', 'sensor')}
+                ${this.renderEntitySelect('entity_fan_extract', 'Extract Fan (RPM)', 'sensor')}
+                ${this.renderEntitySelect('entity_level', 'Fan Level Entity', 'sensor')}
+                ${this.renderEntitySelect('entity_efficiency', 'Efficiency Entity', 'sensor')}
 
+                <h3>Other</h3>
+                ${this.renderEntitySelect('entity_bypass', 'Bypass Entity', 'binary_sensor,sensor')}
+                
                 <div class="option">
-                   ${this.renderTextField('entity_bypass', 'Bypass Entity (Optional)')}
-                </div>
-
-                <div style="margin-top: 20px; padding: 10px; background: #f5f5f5; border-radius: 4px; font-family: monospace; font-size: 11px;">
-                    <strong>Debug Trace (Saved Values):</strong><br>
-                    Supply: ${this._config.entity_temp_supply || 'not set'}<br>
-                    Extract: ${this._config.entity_temp_extract || 'not set'}<br>
+                     <label>Manual Efficiency Calc (Checkbox)</label>
+                     <input type="checkbox" 
+                        .checked=${this._config.efficiency_calculation_dynamic === true}
+                        @change=${(e: Event) => this._updateConfig('efficiency_calculation_dynamic', (e.target as HTMLInputElement).checked)}
+                     /> 
+                     <span style="font-size: 12px;">Enable dynamic calculation from temperatures</span>
                 </div>
             </div>
         `;
     }
 
-    private renderTextField(configValue: string, label: string): TemplateResult {
+    private renderEntitySelect(configValue: string, label: string, domains: string): TemplateResult {
+        const currentVal = (this._config as any)[configValue] || '';
+
+        // Filter entities from hass.states
+        const domainList = domains.split(',');
+        const entities = Object.keys(this.hass.states)
+            .filter(eid => domainList.some(d => eid.startsWith(d + '.')))
+            .sort();
+
         return html`
             <div class="option">
-                <ha-textfield
-                    label="${label}"
-                    .value=${(this._config as any)[configValue] || ''}
-                    .configValue=${configValue}
-                    @input=${this._valueChanged}
-                ></ha-textfield>
+                <label>${label}</label>
+                <select 
+                    .value=${currentVal} 
+                    @change=${(e: Event) => this._updateConfig(configValue, (e.target as HTMLSelectElement).value)}
+                    class="select-input"
+                >
+                    <option value="" disabled ?selected=${currentVal === ''}>Select an entity...</option>
+                    ${entities.map(eid => html`
+                        <option value=${eid} ?selected=${eid === currentVal}>
+                            ${this.hass.states[eid].attributes.friendly_name || eid} (${eid})
+                        </option>
+                    `)}
+                </select>
+                <div class="value-display">Selected: ${currentVal || 'None'}</div>
             </div>
         `;
     }
 
-    private _valueChanged(ev: any): void {
-        if (!this._config || !this.hass) return;
-        const target = ev.target;
-        const configValue = target.configValue;
-        const value = target.value;
+    private _updateConfig(key: string, value: any): void {
+        if (!this._config) return;
 
-        if ((this._config as any)[configValue] === value) return;
+        const newConfig = { ...this._config, [key]: value };
 
-        const newConfig = {
-            ...this._config,
-            [configValue]: value,
-        };
+        // Optimistic update
+        this._config = newConfig;
 
-        const event = new CustomEvent('config-changed', {
+        this.dispatchEvent(new CustomEvent('config-changed', {
             detail: { config: newConfig },
             bubbles: true,
             composed: true,
-        });
-        this.dispatchEvent(event);
+        }));
     }
 
     static get styles() {
         return css`
             .card-config {
-                padding: 8px;
+                padding: 16px;
+                font-family: var(--paper-font-body1_-_font-family);
+            }
+            .debug-box {
+                background: #e8f5e9;
+                border: 1px solid #4caf50;
+                padding: 10px;
+                margin-bottom: 20px; 
+                border-radius: 4px; 
+                font-size: 12px;
+                color: #2e7d32;
             }
             .option {
-                margin-bottom: 12px;
+                margin-bottom: 16px;
                 display: flex;
                 flex-direction: column;
             }
-            .grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
+            label {
+                font-size: 12px;
+                font-weight: 500;
+                margin-bottom: 4px;
+                color: var(--secondary-text-color);
             }
-            ha-textfield {
+            .text-input, .select-input {
                 width: 100%;
+                padding: 8px;
+                border: 1px solid var(--divider-color, #ccc);
+                border-radius: 4px;
+                background: var(--card-background-color, white);
+                color: var(--primary-text-color, black);
+                font-size: 14px;
+            }
+            .value-display {
+                font-size: 10px;
+                color: #888;
+                margin-top: 2px;
             }
             h3 {
                 font-size: 14px;
-                margin: 16px 0 8px 0;
-                color: var(--secondary-text-color);
-                border-bottom: 1px solid #eee;
+                margin: 20px 0 10px 0;
+                border-bottom: 1px solid var(--divider-color, #eee);
                 padding-bottom: 4px;
             }
         `;
