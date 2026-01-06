@@ -11,101 +11,105 @@ export class AirflowCardEditor extends LitElement {
         this._config = config;
     }
 
-    private _schema = [
-        { name: 'name', selector: { text: {} } },
-        { name: 'language', selector: { select: { options: [{ label: 'English', value: 'en' }, { label: 'Deutsch', value: 'de' }] } } },
-        {
-            name: '',
-            type: 'grid',
-            schema: [
-                { name: 'entity_temp_supply', selector: { entity: { domain: 'sensor' } } },
-                { name: 'entity_temp_extract', selector: { entity: { domain: 'sensor' } } },
-                { name: 'entity_temp_exhaust', selector: { entity: { domain: 'sensor' } } },
-                { name: 'entity_temp_outdoor', selector: { entity: { domain: 'sensor' } } },
-            ]
-        },
-        {
-            name: '',
-            type: 'grid',
-            schema: [
-                { name: 'entity_fan_supply', selector: { entity: { domain: 'sensor' } } },
-                { name: 'entity_fan_extract', selector: { entity: { domain: 'sensor' } } },
-            ]
-        },
-        {
-            name: '',
-            type: 'grid',
-            schema: [
-                { name: 'entity_level', selector: { entity: { domain: 'sensor' } } },
-                { name: 'level_min', selector: { number: { min: 0, max: 100, mode: 'box' } } },
-                { name: 'level_max', selector: { number: { min: 0, max: 100, mode: 'box' } } },
-            ]
-        },
-        {
-            name: '',
-            type: 'grid',
-            schema: [
-                { name: 'entity_efficiency', selector: { entity: { domain: 'sensor' } } },
-                { name: 'efficiency_calculation_dynamic', selector: { boolean: {} } },
-            ]
-        },
-        { name: 'entity_bypass', selector: { entity: {} } },
-        {
-            name: 'colors',
-            type: 'grid',
-            schema: [
-                { name: 'color_outdoor', selector: { text: {} } },
-                { name: 'color_supply', selector: { text: {} } },
-                { name: 'color_extract', selector: { text: {} } },
-                { name: 'color_exhaust', selector: { text: {} } },
-            ]
-        },
-    ];
-
     protected render(): TemplateResult {
         if (!this.hass || !this._config) {
-            return html``;
+            return html`<div style="color: red; padding: 16px;">Editor Loading... (Hass: ${!!this.hass}, Config: ${!!this._config})</div>`;
         }
 
         return html`
-            <ha-form
-                .hass=${this.hass}
-                .data=${this._config}
-                .schema=${this._schema}
-                .computeLabel=${this._computeLabel}
-                @value-changed=${this._valueChanged}
-            ></ha-form>
+            <div class="card-config">
+                <div style="background: #f0f0f0; padding: 10px; margin-bottom: 20px; border-radius: 8px; color: #333;">
+                    <strong>Editor Debug Info:</strong><br>
+                    Version: 1.2 (Manual Components)<br>
+                    Config Name: ${this._config.name || 'None'}
+                </div>
+
+                <div class="option">
+                    <ha-textfield
+                        label="Name"
+                        .value=${this._config.name || ''}
+                        .configValue=${'name'}
+                        @input=${this._valueChanged}
+                    ></ha-textfield>
+                </div>
+
+                <div class="option">
+                    <p>Supply Temperature (Zuluft)</p>
+                    <ha-entity-picker
+                        .hass=${this.hass}
+                        .value=${this._config.entity_temp_supply || ''}
+                        .configValue=${'entity_temp_supply'}
+                        @value-changed=${this._valueChanged}
+                        allow-custom-entity
+                    ></ha-entity-picker>
+                </div>
+
+                <div class="option">
+                    <p>Extract Temperature (Abluft)</p>
+                    <ha-entity-picker
+                        .hass=${this.hass}
+                        .value=${this._config.entity_temp_extract || ''}
+                        .configValue=${'entity_temp_extract'}
+                        @value-changed=${this._valueChanged}
+                        allow-custom-entity
+                    ></ha-entity-picker>
+                </div>
+
+                <div class="option">
+                    <p>Exhaust Temperature (Fortluft)</p>
+                    <ha-entity-picker
+                        .hass=${this.hass}
+                        .value=${this._config.entity_temp_exhaust || ''}
+                        .configValue=${'entity_temp_exhaust'}
+                        @value-changed=${this._valueChanged}
+                        allow-custom-entity
+                    ></ha-entity-picker>
+                </div>
+
+                <div class="option">
+                    <p>Outdoor Temperature (Außenluft)</p>
+                    <ha-entity-picker
+                        .hass=${this.hass}
+                        .value=${this._config.entity_temp_outdoor || ''}
+                        .configValue=${'entity_temp_outdoor'}
+                        @value-changed=${this._valueChanged}
+                        allow-custom-entity
+                    ></ha-entity-picker>
+                </div>
+
+                <div class="option">
+                    <p>Bypass Entity (Optional)</p>
+                    <ha-entity-picker
+                        .hass=${this.hass}
+                        .value=${this._config.entity_bypass || ''}
+                        .configValue=${'entity_bypass'}
+                        @value-changed=${this._valueChanged}
+                        allow-custom-entity
+                    ></ha-entity-picker>
+                </div>
+            </div>
         `;
     }
 
-    private _computeLabel = (schema: any) => {
-        const labels: { [key: string]: string } = {
-            name: 'Name',
-            language: 'Language',
-            entity_temp_supply: 'Supply Temp (Zuluft)',
-            entity_temp_extract: 'Extract Temp (Abluft)',
-            entity_temp_exhaust: 'Exhaust Temp (Fortluft)',
-            entity_temp_outdoor: 'Outdoor Temp (Außenluft)',
-            entity_fan_supply: 'Supply Fan RPM',
-            entity_fan_extract: 'Extract Fan RPM',
-            entity_level: 'Fan Level Sensor',
-            level_min: 'Min Level',
-            level_max: 'Max Level',
-            entity_efficiency: 'Efficiency Sensor',
-            efficiency_calculation_dynamic: 'Dynamic Efficiency Calculation',
-            entity_bypass: 'Bypass Entity',
-            color_outdoor: 'Outdoor Color',
-            color_supply: 'Supply Color',
-            color_extract: 'Extract Color',
-            color_exhaust: 'Exhaust Color',
-        };
-        return labels[schema.name] || schema.name;
-    };
+    private _valueChanged(ev: any): void {
+        if (!this._config || !this.hass) {
+            return;
+        }
+        const target = ev.target;
+        const configValue = target.configValue;
+        const value = ev.detail?.value !== undefined ? ev.detail.value : target.value;
 
-    private _valueChanged(ev: CustomEvent): void {
-        const config = ev.detail.value;
+        if (this._config[configValue as keyof AirflowCardConfig] === value) {
+            return;
+        }
+
+        const newConfig = {
+            ...this._config,
+            [configValue]: value,
+        };
+
         const event = new CustomEvent('config-changed', {
-            detail: { config },
+            detail: { config: newConfig },
             bubbles: true,
             composed: true,
         });
@@ -114,9 +118,21 @@ export class AirflowCardEditor extends LitElement {
 
     static get styles() {
         return css`
-            ha-form {
-                display: block;
-                padding: 8px 0;
+            .card-config {
+                padding: 16px;
+            }
+            .option {
+                margin-bottom: 16px;
+                display: flex;
+                flex-direction: column;
+            }
+            .option p {
+                margin: 0 0 4px 0;
+                font-size: 14px;
+                color: var(--secondary-text-color);
+            }
+            ha-textfield, ha-entity-picker {
+                width: 100%;
             }
         `;
     }
