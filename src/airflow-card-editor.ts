@@ -41,36 +41,40 @@ export class AirflowCardEditor extends LitElement {
                 <div class="option">
                     <ha-entity-picker
                         .hass=${this.hass}
-                        .value=${this._config.entity_temp_supply}
+                        .value=${this._config.entity_temp_supply || ''}
                         .configValue=${'entity_temp_supply'}
                         label="Supply Temperature (Zuluft)"
+                        domain-filter="sensor"
                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
                         .hass=${this.hass}
-                        .value=${this._config.entity_temp_extract}
+                        .value=${this._config.entity_temp_extract || ''}
                         .configValue=${'entity_temp_extract'}
                         label="Extract Temperature (Abluft)"
+                        domain-filter="sensor"
                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
                         .hass=${this.hass}
-                        .value=${this._config.entity_temp_exhaust}
+                        .value=${this._config.entity_temp_exhaust || ''}
                         .configValue=${'entity_temp_exhaust'}
                         label="Exhaust Temperature (Fortluft)"
+                        domain-filter="sensor"
                         @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
                          .hass=${this.hass}
-                         .value=${this._config.entity_temp_outdoor}
+                         .value=${this._config.entity_temp_outdoor || ''}
                          .configValue=${'entity_temp_outdoor'}
                          label="Outdoor Temperature (Außenluft)"
+                         domain-filter="sensor"
                          @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
@@ -78,27 +82,30 @@ export class AirflowCardEditor extends LitElement {
                  <div class="option">
                     <ha-entity-picker
                          .hass=${this.hass}
-                         .value=${this._config.entity_fan_supply}
+                         .value=${this._config.entity_fan_supply || ''}
                          .configValue=${'entity_fan_supply'}
                          label="Supply Fan RPM (Optional)"
+                         domain-filter="sensor"
                          @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                 <div class="option">
                     <ha-entity-picker
                          .hass=${this.hass}
-                         .value=${this._config.entity_fan_extract}
+                         .value=${this._config.entity_fan_extract || ''}
                          .configValue=${'entity_fan_extract'}
                          label="Extract Fan RPM (Optional)"
+                         domain-filter="sensor"
                          @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
                  <div class="option">
                     <ha-entity-picker
                          .hass=${this.hass}
-                         .value=${this._config.entity_level}
+                         .value=${this._config.entity_level || ''}
                          .configValue=${'entity_level'}
                          label="Fan Level Sensor (Optional)"
+                         domain-filter="sensor"
                          @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
@@ -121,9 +128,10 @@ export class AirflowCardEditor extends LitElement {
                   <div class="option">
                     <ha-entity-picker
                          .hass=${this.hass}
-                         .value=${this._config.entity_efficiency}
+                         .value=${this._config.entity_efficiency || ''}
                          .configValue=${'entity_efficiency'}
                          label="Efficiency Sensor (Optional)"
+                         domain-filter="sensor"
                          @value-changed=${this._valueChanged}
                     ></ha-entity-picker>
                 </div>
@@ -139,7 +147,7 @@ export class AirflowCardEditor extends LitElement {
                  <div class="option">
                     <ha-entity-picker
                          .hass=${this.hass}
-                         .value=${this._config.entity_bypass}
+                         .value=${this._config.entity_bypass || ''}
                          .configValue=${'entity_bypass'}
                          label="Bypass Entity (Optional)"
                          @value-changed=${this._valueChanged}
