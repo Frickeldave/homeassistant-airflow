@@ -18,90 +18,70 @@ export class AirflowCardEditor extends LitElement {
 
         return html`
             <div class="card-config">
-                <div style="background: #f0f0f0; padding: 10px; margin-bottom: 20px; border-radius: 8px; color: #333;">
-                    <strong>Editor Debug Info:</strong><br>
-                    Version: 1.2 (Manual Components)<br>
-                    Config Name: ${this._config.name || 'None'}
+                <div style="background: #fff3e0; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ffb74d; color: #e65100; font-size: 13px;">
+                    <strong>Editor Safe Mode (v2.2)</strong><br>
+                    Since entity pickers failed to load, we are using stable text fields. 
+                    Please enter your entity IDs manually (e.g., <em>sensor.my_temp</em>).
                 </div>
 
                 <div class="option">
                     <ha-textfield
-                        label="Name"
+                        label="Display Name"
                         .value=${this._config.name || ''}
                         .configValue=${'name'}
                         @input=${this._valueChanged}
                     ></ha-textfield>
                 </div>
 
-                <div class="option">
-                    <p>Supply Temperature (Zuluft)</p>
-                    <ha-entity-picker
-                        .hass=${this.hass}
-                        .value=${this._config.entity_temp_supply || ''}
-                        .configValue=${'entity_temp_supply'}
-                        @value-changed=${this._valueChanged}
-                        allow-custom-entity
-                    ></ha-entity-picker>
+                <h3>Temperatures (Sensors)</h3>
+                <div class="grid">
+                    ${this.renderTextField('entity_temp_supply', 'Supply Temp (Zuluft)')}
+                    ${this.renderTextField('entity_temp_extract', 'Extract Temp (Abluft)')}
+                    ${this.renderTextField('entity_temp_exhaust', 'Exhaust Temp (Fortluft)')}
+                    ${this.renderTextField('entity_temp_outdoor', 'Outdoor Temp (Außenluft)')}
+                </div>
+
+                <h3>Fans & Efficiency</h3>
+                <div class="grid">
+                    ${this.renderTextField('entity_fan_supply', 'Supply Fan (RPM)')}
+                    ${this.renderTextField('entity_fan_extract', 'Extract Fan (RPM)')}
+                    ${this.renderTextField('entity_level', 'Fan Level Entity')}
+                    ${this.renderTextField('entity_efficiency', 'Efficiency Entity')}
                 </div>
 
                 <div class="option">
-                    <p>Extract Temperature (Abluft)</p>
-                    <ha-entity-picker
-                        .hass=${this.hass}
-                        .value=${this._config.entity_temp_extract || ''}
-                        .configValue=${'entity_temp_extract'}
-                        @value-changed=${this._valueChanged}
-                        allow-custom-entity
-                    ></ha-entity-picker>
+                   ${this.renderTextField('entity_bypass', 'Bypass Entity (Optional)')}
                 </div>
 
-                <div class="option">
-                    <p>Exhaust Temperature (Fortluft)</p>
-                    <ha-entity-picker
-                        .hass=${this.hass}
-                        .value=${this._config.entity_temp_exhaust || ''}
-                        .configValue=${'entity_temp_exhaust'}
-                        @value-changed=${this._valueChanged}
-                        allow-custom-entity
-                    ></ha-entity-picker>
-                </div>
-
-                <div class="option">
-                    <p>Outdoor Temperature (Außenluft)</p>
-                    <ha-entity-picker
-                        .hass=${this.hass}
-                        .value=${this._config.entity_temp_outdoor || ''}
-                        .configValue=${'entity_temp_outdoor'}
-                        @value-changed=${this._valueChanged}
-                        allow-custom-entity
-                    ></ha-entity-picker>
-                </div>
-
-                <div class="option">
-                    <p>Bypass Entity (Optional)</p>
-                    <ha-entity-picker
-                        .hass=${this.hass}
-                        .value=${this._config.entity_bypass || ''}
-                        .configValue=${'entity_bypass'}
-                        @value-changed=${this._valueChanged}
-                        allow-custom-entity
-                    ></ha-entity-picker>
+                <div style="margin-top: 20px; padding: 10px; background: #f5f5f5; border-radius: 4px; font-family: monospace; font-size: 11px;">
+                    <strong>Debug Trace (Saved Values):</strong><br>
+                    Supply: ${this._config.entity_temp_supply || 'not set'}<br>
+                    Extract: ${this._config.entity_temp_extract || 'not set'}<br>
                 </div>
             </div>
         `;
     }
 
+    private renderTextField(configValue: string, label: string): TemplateResult {
+        return html`
+            <div class="option">
+                <ha-textfield
+                    label="${label}"
+                    .value=${(this._config as any)[configValue] || ''}
+                    .configValue=${configValue}
+                    @input=${this._valueChanged}
+                ></ha-textfield>
+            </div>
+        `;
+    }
+
     private _valueChanged(ev: any): void {
-        if (!this._config || !this.hass) {
-            return;
-        }
+        if (!this._config || !this.hass) return;
         const target = ev.target;
         const configValue = target.configValue;
-        const value = ev.detail?.value !== undefined ? ev.detail.value : target.value;
+        const value = target.value;
 
-        if (this._config[configValue as keyof AirflowCardConfig] === value) {
-            return;
-        }
+        if ((this._config as any)[configValue] === value) return;
 
         const newConfig = {
             ...this._config,
@@ -119,20 +99,27 @@ export class AirflowCardEditor extends LitElement {
     static get styles() {
         return css`
             .card-config {
-                padding: 16px;
+                padding: 8px;
             }
             .option {
-                margin-bottom: 16px;
+                margin-bottom: 12px;
                 display: flex;
                 flex-direction: column;
             }
-            .option p {
-                margin: 0 0 4px 0;
-                font-size: 14px;
-                color: var(--secondary-text-color);
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
             }
-            ha-textfield, ha-entity-picker {
+            ha-textfield {
                 width: 100%;
+            }
+            h3 {
+                font-size: 14px;
+                margin: 16px 0 8px 0;
+                color: var(--secondary-text-color);
+                border-bottom: 1px solid #eee;
+                padding-bottom: 4px;
             }
         `;
     }
