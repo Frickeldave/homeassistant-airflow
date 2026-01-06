@@ -5,13 +5,15 @@ export default defineConfig({
     lib: {
       entry: 'src/airflow-card.ts',
       formats: ['es'],
+      fileName: () => `homeassistant-airflow.js`,
     },
     outDir: 'dist',
     rollupOptions: {
-      external: [
-         // We generally bundle dependencies for custom cards to ensure one file distribution,
-         // but if HA provides globals we might exclude them. usually 'custom-card-helpers' is bundled.
-      ]
+      output: {
+        entryFileNames: `homeassistant-airflow.js`,
+        chunkFileNames: `[name].js`,
+        assetFileNames: `[name].[ext]`,
+      }
     }
   }
 });

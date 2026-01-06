@@ -1,0 +1,5 @@
+{
+    "name": "HomeAssistant Airflow Card",
+    "render_readme": true,
+    "filename": "homeassistant-airflow.js"
+}
