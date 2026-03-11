@@ -82,7 +82,8 @@ export class AirflowCard extends LitElement {
 
         // Calculate dynamic speeds
         const levelEntity = this.config.entity_level;
-        const levelState = levelEntity ? parseFloat(this.hass.states[levelEntity]?.state ?? '0') : 1;
+        const levelStateRaw = levelEntity ? parseFloat(this.hass.states[levelEntity]?.state ?? '1') : 1;
+        const levelState = isNaN(levelStateRaw) ? 1 : levelStateRaw;
         const min = this.config.level_min ?? 0;
         const max = this.config.level_max ?? 4;
 
@@ -93,15 +94,15 @@ export class AirflowCard extends LitElement {
         // Map normalized level to durations (lower is faster)
         // Fan: 3s (slow) to 0.4s (fast)
         // Flow: 2s (slow) to 0.2s (fast)
-        const fanDuration = levelState > 0 ? (3 - (normalizedLevel * 2.6)).toFixed(2) : 0;
-        const flowDuration = levelState > 0 ? (2 - (normalizedLevel * 1.8)).toFixed(2) : 0;
+        const fanDuration = levelState > 0 ? (3 - (normalizedLevel * 2.6)).toFixed(2) : "0";
+        const flowDuration = levelState > 0 ? (2 - (normalizedLevel * 1.8)).toFixed(2) : "0";
 
         const lang = this.config.language ?? 'en';
         const t = translations[lang] || translations.en;
 
         return svg`
        <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" 
-            style="--fan-speed: ${fanDuration}s; --flow-speed: ${flowDuration}s;">
+            style="--fan-speed: ${fanDuration}s; --flow-speed: ${flowDuration}s; --flow-display: ${flowDuration === "0" ? 'none' : 'block'};">
          <defs>
             <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
@@ -123,29 +124,6 @@ export class AirflowCard extends LitElement {
                 <stop offset="0%" stop-color="${colorStale}" />
                 <stop offset="100%" stop-color="${colorExhaust}" />
             </linearGradient>
-            
-            <!-- Fan Animation -->
-            <style>
-                .fan-spin { 
-                    animation: spin var(--fan-speed, 2s) linear infinite;
-                    animation-play-state: ${fanDuration === 0 ? 'paused' : 'running'};
-                }
-                @keyframes spin { 100% { transform: rotate(360deg); } }
-                
-                .flow-line {
-                    stroke-dasharray: 10, 15;
-                    animation: flow var(--flow-speed, 0.8s) linear infinite;
-                    display: ${flowDuration === 0 ? 'none' : 'block'};
-                }
-                .flow-line-inner {
-                    stroke-dasharray: 4, 8;
-                    animation: flow var(--flow-speed, 0.8s) linear infinite;
-                    display: ${flowDuration === 0 ? 'none' : 'block'};
-                }
-                @keyframes flow {
-                    to { stroke-dashoffset: -25; }
-                }
-            </style>
          </defs>
 
          <!-- Main Unit Box (Now large enough to contain everything) -->
@@ -189,8 +167,8 @@ export class AirflowCard extends LitElement {
          ${this.renderPortBox(cx + 140, cy + 105, t.supply, this.config.entity_temp_supply, isBypassOpen ? colorOutdoor : colorFresh)}
 
          <!-- Fans -->
-         ${this.renderFan(cx + 150, cy + 60, this.config.entity_fan_supply, isBypassOpen ? colorOutdoor : colorFresh)}
-         ${this.renderFan(cx - 150, cy + 60, this.config.entity_fan_extract, colorExhaust)}
+         ${this.renderFan(cx + 150, cy + 60, this.config.entity_fan_supply, isBypassOpen ? colorOutdoor : colorFresh, fanDuration)}
+         ${this.renderFan(cx - 150, cy + 60, this.config.entity_fan_extract, colorExhaust, fanDuration)}
          
          <!-- Bypass (If Active) -->
          ${this.renderBypass(cx, cy)}
@@ -271,14 +249,14 @@ export class AirflowCard extends LitElement {
 
 
 
-    private renderFan(x: number, y: number, entityId: string | undefined, color: string): SVGTemplateResult {
+    private renderFan(x: number, y: number, entityId: string | undefined, color: string, duration: string): SVGTemplateResult {
         const stateObj = entityId ? this.hass.states[entityId] : undefined;
         const fanState = stateObj?.state ?? '0';
         const unit = stateObj?.attributes.unit_of_measurement ?? '';
 
         // Check if numeric > 0 or "on"
         const numericState = parseFloat(fanState);
-        const isSpinning = fanState === 'on' || (numericState > 0);
+        const isSpinning = fanState === 'on' || (!isNaN(numericState) && numericState > 0);
         const showSpeed = !isNaN(numericState) && numericState > 0;
 
         // Render a 3-blade fan with a central hub and speed display
@@ -289,7 +267,10 @@ export class AirflowCard extends LitElement {
                     <text x="0" y="-25" font-size="10" text-anchor="middle" fill="${color}" font-weight="bold">${fanState} RPM</text>
                 ` : ''}
                 
-                <g class="${isSpinning ? 'fan-spin' : ''}" style="transform-origin: 0 0;">
+                <g>
+                    ${isSpinning && duration !== "0" ? svg`
+                        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="${duration}s" repeatCount="indefinite"/>
+                    ` : ''}
                     <circle cx="0" cy="0" r="20" fill="white" stroke="${color}" stroke-width="2"/>
                     <g fill="${color}" opacity="0.9">
                         <path d="M0,0 C-10,-10 -12,-18 0,-18 C12,-18 10,-10 0,0 Z" />
@@ -317,7 +298,19 @@ export class AirflowCard extends LitElement {
         max-width: 500px;
         margin-bottom: 16px;
       }
-
+      .flow-line {
+          stroke-dasharray: 10, 15;
+          animation: flow var(--flow-speed, 0.8s) linear infinite;
+          display: var(--flow-display, block);
+      }
+      .flow-line-inner {
+          stroke-dasharray: 4, 8;
+          animation: flow var(--flow-speed, 0.8s) linear infinite;
+          display: var(--flow-display, block);
+      }
+      @keyframes flow {
+          to { stroke-dashoffset: -25; }
+      }
     `;
     }
 }
