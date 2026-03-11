@@ -108,14 +108,28 @@ export class AirflowCard extends LitElement {
         const isDark = mode === 'dark';
         const isAuto = mode === 'auto';
 
-        // Define colors based on mode
-        const cardBg = isAuto ? 'var(--ha-card-background, var(--card-background-color, white))' : (isLight ? 'white' : '#1c1c1c');
-        const primaryText = isAuto ? 'var(--primary-text-color, #333)' : (isLight ? '#333' : '#e1e1e1');
-        const secondaryText = isAuto ? 'var(--secondary-text-color, #444)' : (isLight ? '#444' : '#b0b0b0');
-        const divider = isAuto ? 'var(--divider-color, #ccc)' : (isLight ? '#ccc' : '#444');
-        const unitStroke = isAuto ? 'var(--divider-color, #333)' : (isLight ? '#333' : '#444');
-        const primaryBg = isAuto ? 'var(--primary-background-color, #fdfdfd)' : (isLight ? '#fdfdfd' : '#2c2c2c');
-        const secondaryBg = isAuto ? 'var(--secondary-background-color, #f0f0f0)' : (isLight ? '#f0f0f0' : '#333');
+        // Define colors based on mode with robust fallbacks
+        const cardBg = isAuto 
+            ? 'var(--ha-card-background, var(--card-background-color, var(--paper-card-background-color, white)))' 
+            : (isLight ? 'white' : '#1c1c1c');
+        const primaryText = isAuto 
+            ? 'var(--primary-text-color, var(--primary-text-color, #333))' 
+            : (isLight ? '#333' : '#e1e1e1');
+        const secondaryText = isAuto 
+            ? 'var(--secondary-text-color, var(--secondary-text-color, #444))' 
+            : (isLight ? '#444' : '#b0b0b0');
+        const divider = isAuto 
+            ? 'var(--divider-color, var(--divider-color, #ccc))' 
+            : (isLight ? '#ccc' : '#444');
+        const unitStroke = isAuto 
+            ? 'var(--divider-color, var(--primary-text-color, #333))' 
+            : (isLight ? '#333' : '#444');
+        const primaryBg = isAuto 
+            ? 'var(--primary-background-color, var(--primary-background-color, #fdfdfd))' 
+            : (isLight ? '#fdfdfd' : '#2c2c2c');
+        const secondaryBg = isAuto 
+            ? 'var(--secondary-background-color, var(--secondary-background-color, #f0f0f0))' 
+            : (isLight ? '#f0f0f0' : '#333');
 
         return svg`
        <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" 

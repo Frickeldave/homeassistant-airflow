@@ -47,9 +47,14 @@ The card can be fully configured via the Visual Editor.
 - **Fan Level Sensor:** Sensor for the current operational stage (e.g., 1, 2, 3). This sensor now also controls the animation if no RPM sensors are configured.
 - **Min/Max Level:** Define the range of your ventilation stages to scale the animation speed.
 - **Bypass Entity:** Binary sensor or sensor that indicates if the bypass is active.
-- **Language:** Choice between English and German.
 - **Background Color Mode:** Select between "Automatic (Theme)", "Fixed Dark", and "Fixed Light".
 - **Colors:** Custom hex-codes for Outdoor, Supply, Extract, and Exhaust paths.
+
+### Theme Mode
+The card supports three appearance modes:
+- **Automatic (default):** Uses CSS variables from your Home Assistant theme.
+- **Fixed Dark:** Forces dark background and light text, ideal for specific dashboard designs.
+- **Fixed Light:** Forces white background and dark text.
 
 ## Installation
 

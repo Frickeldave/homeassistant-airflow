@@ -50,6 +50,12 @@ Die Karte kann vollständig über den visuellen Editor konfiguriert werden.
 - **Hintergrund-Farbmodus:** Auswahl zwischen "Automatisch (Theme)", "Festes Dunkel" (Dark) und "Festes Hell" (Light).
 - **Farben:** Eigene Hex-Codes für Außenluft, Zuluft, Abluft und Fortluft.
 
+### Theme-Modus
+Die Karte unterstützt drei verschiedene Darstellungsmodi:
+- **Automatisch (Standard):** Verwendet die CSS-Variablen deines aktuellen Home Assistant Themes.
+- **Dunkel (Dark):** Erzwingt einen dunklen Hintergrund und helle Texte.
+- **Hell (Light):** Erzwingt einen weißen Hintergrund und dunkle Texte.
+
 ## Installation
 
 ### Manuell
