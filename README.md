@@ -27,6 +27,7 @@ The following standard terminology is used for the air paths:
 - **Efficiency Calculation:** Option to calculate heat exchanger efficiency live from temperature sensors.
 - **Bypass Logic:** Visually diverts the fresh air stream when the bypass is active and unifies the color.
 - **Customizable Colors:** Fully adjustable colors for all four airflow paths.
+- **Theme Support:** Automatically adapts to Home Assistant's light and dark themes using standard CSS variables.
 - **UI Editor:** Easy configuration via the Home Assistant card editor.
 
 ## Configuration
@@ -47,6 +48,7 @@ The card can be fully configured via the Visual Editor.
 - **Min/Max Level:** Define the range of your ventilation stages to scale the animation speed.
 - **Bypass Entity:** Binary sensor or sensor that indicates if the bypass is active.
 - **Language:** Choice between English and German.
+- **Background Color Mode:** Select between "Automatic (Theme)", "Fixed Dark", and "Fixed Light".
 - **Colors:** Custom hex-codes for Outdoor, Supply, Extract, and Exhaust paths.
 
 ## Installation

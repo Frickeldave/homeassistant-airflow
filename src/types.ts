@@ -25,6 +25,7 @@ export interface AirflowCardConfig {
     color_supply?: string;
     color_extract?: string;
     color_exhaust?: string;
+    card_background_mode?: 'auto' | 'dark' | 'light';
 }
 
 export interface HomeAssistant {

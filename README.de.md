@@ -27,6 +27,7 @@ Die folgenden Standardbegriffe werden für die Luftwege verwendet:
 - **Effizienzberechnung:** Option zur Live-Berechnung des Wirkungsgrads aus den Temperatursensoren.
 - **Bypass-Logik:** Visuelle Umleitung des Außenluftstroms bei aktivem Bypass inklusive Farbanpassung.
 - **Anpassbare Farben:** Vollständig konfigurierbare Farben für alle vier Luftwege.
+- **Theme-Unterstützung:** Passt sich automatisch an die Light- und Dark-Themes von Home Assistant an (verwendet Standard-CSS-Variablen).
 - **UI-Editor:** Einfache Konfiguration über den Home Assistant Karten-Editor.
 
 ## Konfiguration
@@ -47,6 +48,7 @@ Die Karte kann vollständig über den visuellen Editor konfiguriert werden.
 - **Min/Max Stufe:** Bereich deiner Lüfterstufen zur Skalierung der Animationsgeschwindigkeit.
 - **Bypass Entität:** Binärer Sensor oder Sensor, der anzeigt, ob der Bypass aktiv ist.
 - **Sprache:** Auswahl zwischen Deutsch und Englisch.
+- **Hintergrund-Farbmodus:** Auswahl zwischen "Automatisch (Theme)", "Festes Dunkel" (Dark) und "Festes Hell" (Light).
 - **Farben:** Eigene Hex-Codes für Außenluft, Zuluft, Abluft und Fortluft.
 
 ## Installation

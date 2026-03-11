@@ -10,6 +10,12 @@
             font-family: sans-serif;
             background: #fafafa;
             padding: 20px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark {
+            background: #111;
+            color: #eee;
         }
 
         ha-card {
@@ -17,8 +23,23 @@
             border-radius: 4px;
             box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
             display: block;
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
+            color: #333;
+        }
+
+        body.dark airflow-card {
+            background: #1c1c1c;
+            color: #e1e1e1;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+            /* Simulate HA CSS variables */
+            --ha-card-background: #1c1c1c;
+            --card-background-color: #1c1c1c;
+            --primary-text-color: #e1e1e1;
+            --secondary-text-color: #b0b0b0;
+            --divider-color: #444;
+            --primary-background-color: #2c2c2c;
+            --secondary-background-color: #333;
         }
     </style>
     <script type="module" src="/src/airflow-card.ts"></script>
@@ -30,6 +51,7 @@
     <div style="margin-bottom: 20px; text-align: center;">
         <button onclick="setLanguage('en')">English</button>
         <button onclick="setLanguage('de')">Deutsch</button>
+        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
     </div>
 
     <airflow-card id="demo-card"></airflow-card>
@@ -83,6 +105,10 @@
         function setLanguage(lang) {
             currentLang = lang;
             updateCard();
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark');
         }
 
         customElements.whenDefined('airflow-card').then(() => {

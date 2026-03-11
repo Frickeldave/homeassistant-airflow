@@ -102,6 +102,20 @@ export class AirflowCard extends LitElement {
             lang = (this.hass.language as any) === 'de' ? 'de' : 'en';
         }
         const t = (translations as any)[lang] || translations.en;
+        
+        const mode = this.config.card_background_mode || 'auto';
+        const isLight = mode === 'light';
+        const isDark = mode === 'dark';
+        const isAuto = mode === 'auto';
+
+        // Define colors based on mode
+        const cardBg = isAuto ? 'var(--ha-card-background, var(--card-background-color, white))' : (isLight ? 'white' : '#1c1c1c');
+        const primaryText = isAuto ? 'var(--primary-text-color, #333)' : (isLight ? '#333' : '#e1e1e1');
+        const secondaryText = isAuto ? 'var(--secondary-text-color, #444)' : (isLight ? '#444' : '#b0b0b0');
+        const divider = isAuto ? 'var(--divider-color, #ccc)' : (isLight ? '#ccc' : '#444');
+        const unitStroke = isAuto ? 'var(--divider-color, #333)' : (isLight ? '#333' : '#444');
+        const primaryBg = isAuto ? 'var(--primary-background-color, #fdfdfd)' : (isLight ? '#fdfdfd' : '#2c2c2c');
+        const secondaryBg = isAuto ? 'var(--secondary-background-color, #f0f0f0)' : (isLight ? '#f0f0f0' : '#333');
 
         return svg`
        <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" 
@@ -130,16 +144,16 @@ export class AirflowCard extends LitElement {
          </defs>
 
          <!-- Main Unit Box (Now large enough to contain everything) -->
-         <rect x="${cx - 250}" y="${cy - 180}" width="500" height="360" rx="15" fill="white" stroke="#333" stroke-width="2" filter="url(#dropShadow)" />
+         <rect x="${cx - 250}" y="${cy - 180}" width="500" height="360" rx="15" fill="${cardBg}" stroke="${unitStroke}" stroke-width="2" filter="url(#dropShadow)" />
          
          <!-- Heat Exchanger (Diamond shape in middle) -->
-         <path d="M ${cx} ${cy - 80} L ${cx + 80} ${cy} L ${cx} ${cy + 80} L ${cx - 80} ${cy} Z" fill="#fdfdfd" stroke="#ccc" stroke-width="1" />
+         <rect x="${cx - 56.5}" y="${cy - 56.5}" width="113" height="113" transform="rotate(45 ${cx} ${cy})" fill="${primaryBg}" stroke="${divider}" stroke-width="1" />
          
          <!-- Background Ducts (Static) -->
          <!-- Path 1: Outdoor -> Supply -->
-         <path d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="#f0f0f0" stroke-width="12" stroke-linecap="round"/>
+         <path d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${secondaryBg}" stroke-width="12" stroke-linecap="round"/>
          <!-- Path 2: Extract -> Exhaust -->
-         <path d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="#f0f0f0" stroke-width="12" stroke-linecap="round"/>
+         <path d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${secondaryBg}" stroke-width="12" stroke-linecap="round"/>
 
          <!-- Animated Airflow Lines -->
          <!-- Path 1: Outdoor (Left Top) -> Supply (Right Bottom) -->
@@ -160,18 +174,18 @@ export class AirflowCard extends LitElement {
 
          <!-- Port Boxes (Label + Temperature) -->
          <!-- Top Boxes: Positioned inside the frame, above duct lines -->
-         ${this.renderPortBox(cx - 230, cy - 160, t.outdoor, this.config.entity_temp_outdoor, colorOutdoor)}
-         ${this.renderEfficiency(cx - 45, cy - 160, t.efficiency)}
-         ${this.renderPortBox(cx + 140, cy - 160, t.extract, this.config.entity_temp_extract, colorStale)}
+         ${this.renderPortBox(cx - 230, cy - 160, t.outdoor, this.config.entity_temp_outdoor, colorOutdoor, cardBg, divider, primaryText)}
+         ${this.renderEfficiency(cx - 45, cy - 160, t.efficiency, cardBg, divider, secondaryText, primaryText)}
+         ${this.renderPortBox(cx + 140, cy - 160, t.extract, this.config.entity_temp_extract, colorStale, cardBg, divider, primaryText)}
          
          <!-- Bottom Boxes: Positioned inside the frame, below duct lines -->
-         ${this.renderPortBox(cx - 230, cy + 105, t.exhaust, this.config.entity_temp_exhaust, colorExhaust)}
-         ${this.renderPortBox(cx - 45, cy + 105, t.level, this.config.entity_level, "#444")}
-         ${this.renderPortBox(cx + 140, cy + 105, t.supply, this.config.entity_temp_supply, isBypassOpen ? colorOutdoor : colorFresh)}
+         ${this.renderPortBox(cx - 230, cy + 105, t.exhaust, this.config.entity_temp_exhaust, colorExhaust, cardBg, divider, primaryText)}
+         ${this.renderPortBox(cx - 45, cy + 105, t.level, this.config.entity_level, isLight ? "#444" : primaryText, cardBg, divider, primaryText)}
+         ${this.renderPortBox(cx + 140, cy + 105, t.supply, this.config.entity_temp_supply, isBypassOpen ? colorOutdoor : colorFresh, cardBg, divider, primaryText)}
 
          <!-- Fans -->
-         ${this.renderFan(cx + 150, cy + 60, this.config.entity_fan_supply, isBypassOpen ? colorOutdoor : colorFresh, fanDuration)}
-         ${this.renderFan(cx - 150, cy + 60, this.config.entity_fan_extract, colorExhaust, fanDuration)}
+         ${this.renderFan(cx + 150, cy + 60, this.config.entity_fan_supply, isBypassOpen ? colorOutdoor : colorFresh, fanDuration, cardBg)}
+         ${this.renderFan(cx - 150, cy + 60, this.config.entity_fan_extract, colorExhaust, fanDuration, cardBg)}
          
          <!-- Bypass (If Active) -->
          ${this.renderBypass(cx, cy)}
@@ -182,7 +196,7 @@ export class AirflowCard extends LitElement {
      `;
     }
 
-    private renderPortBox(x: number, y: number, label: string, entityId: string | undefined, color: string): SVGTemplateResult {
+    private renderPortBox(x: number, y: number, label: string, entityId: string | undefined, color: string, cardBg: string, divider: string, textColor: string): SVGTemplateResult {
         const state = entityId ? (this.hass.states[entityId]?.state ?? 'N/A') : '-';
         const unit = entityId ? (this.hass.states[entityId]?.attributes.unit_of_measurement ?? '') : '';
         const width = 90;
@@ -190,9 +204,9 @@ export class AirflowCard extends LitElement {
 
         return svg`
             <g transform="translate(${x}, ${y})">
-                <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="white" stroke="black" stroke-width="1" />
+                <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="${cardBg}" stroke="${divider}" stroke-width="1" />
                 <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="${color}">${label}</text>
-                <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="#333">${state}${unit}</text>
+                <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="${textColor}">${state}${unit}</text>
             </g>
         `;
     }
@@ -210,7 +224,7 @@ export class AirflowCard extends LitElement {
         return svg``;
     }
 
-    private renderEfficiency(x: number, y: number, label: string): SVGTemplateResult {
+    private renderEfficiency(x: number, y: number, label: string, cardBg: string, divider: string, secTextColor: string, textColor: string): SVGTemplateResult {
         let efficiency: string = '-';
 
         if (this.config.efficiency_calculation_dynamic) {
@@ -235,9 +249,9 @@ export class AirflowCard extends LitElement {
         const height = 55;
         return svg`
             <g transform="translate(${x}, ${y})">
-                <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="white" stroke="black" stroke-width="1" />
-                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="#444">${label}</text>
-                <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="#333">${efficiency}%</text>
+                <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="${cardBg}" stroke="${divider}" stroke-width="1" />
+                <text x="${width / 2}" y="20" font-size="12" font-weight="bold" text-anchor="middle" fill="${secTextColor}">${label}</text>
+                <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="${textColor}">${efficiency}%</text>
             </g>
         `;
     }
@@ -252,7 +266,7 @@ export class AirflowCard extends LitElement {
 
 
 
-    private renderFan(x: number, y: number, entityId: string | undefined, color: string, duration: string): SVGTemplateResult {
+    private renderFan(x: number, y: number, entityId: string | undefined, color: string, duration: string, cardBg: string): SVGTemplateResult {
         const stateObj = entityId ? this.hass.states[entityId] : undefined;
         const fanState = stateObj?.state ?? '0';
         const unit = stateObj?.attributes.unit_of_measurement ?? '';
@@ -274,13 +288,13 @@ export class AirflowCard extends LitElement {
                     ${isSpinning && duration !== "0" ? svg`
                         <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="${duration}s" repeatCount="indefinite"/>
                     ` : ''}
-                    <circle cx="0" cy="0" r="20" fill="white" stroke="${color}" stroke-width="2"/>
+                    <circle cx="0" cy="0" r="20" fill="${cardBg}" stroke="${color}" stroke-width="2"/>
                     <g fill="${color}" opacity="0.9">
                         <path d="M0,0 C-10,-10 -12,-18 0,-18 C12,-18 10,-10 0,0 Z" />
                         <path d="M0,0 C-10,-10 -12,-18 0,-18 C12,-18 10,-10 0,0 Z" transform="rotate(120)" />
                         <path d="M0,0 C-10,-10 -12,-18 0,-18 C12,-18 10,-10 0,0 Z" transform="rotate(240)" />
                     </g>
-                    <circle cx="0" cy="0" r="4" fill="white" stroke="${color}" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="4" fill="${cardBg}" stroke="${color}" stroke-width="1"/>
                 </g>
             </g>
         `;

@@ -52,6 +52,16 @@ export class AirflowCardEditor extends LitElement {
                         ]
                     }
                 })}
+                ${this.renderSelector('card_background_mode', 'Background Color Mode', {
+                    select: {
+                        mode: 'dropdown',
+                        options: [
+                            { label: 'Automatic (Theme)', value: 'auto' },
+                            { label: 'Fixed Dark', value: 'dark' },
+                            { label: 'Fixed Light', value: 'light' }
+                        ]
+                    }
+                })}
 
                 <h3>Temperatures</h3>
                 ${this.renderSelector('entity_temp_supply', 'Supply Temperature (Zuluft)', { entity: { domain: 'sensor' } })}
