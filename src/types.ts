@@ -2,7 +2,7 @@
 export interface AirflowCardConfig {
     type: string;
     name?: string;
-    language?: 'en' | 'de';
+    language?: 'auto' | 'en' | 'de';
 
     // Entities
     entity_temp_supply: string; // Zuluft Temperatur
@@ -29,6 +29,7 @@ export interface AirflowCardConfig {
 
 export interface HomeAssistant {
     states: { [key: string]: HassEntity };
+    language: string;
 }
 
 export interface HassEntity {

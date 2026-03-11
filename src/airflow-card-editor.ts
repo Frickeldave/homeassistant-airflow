@@ -41,6 +41,18 @@ export class AirflowCardEditor extends LitElement {
 
                 ${this.renderSelector('name', 'Name', { text: {} })}
 
+                <h3>Display Settings</h3>
+                ${this.renderSelector('language', 'Language', {
+                    select: {
+                        mode: 'dropdown',
+                        options: [
+                            { label: 'Automatic', value: 'auto' },
+                            { label: 'Deutsch', value: 'de' },
+                            { label: 'English', value: 'en' }
+                        ]
+                    }
+                })}
+
                 <h3>Temperatures</h3>
                 ${this.renderSelector('entity_temp_supply', 'Supply Temperature (Zuluft)', { entity: { domain: 'sensor' } })}
                 ${this.renderSelector('entity_temp_extract', 'Extract Temperature (Abluft)', { entity: { domain: 'sensor' } })}

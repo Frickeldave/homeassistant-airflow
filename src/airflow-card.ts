@@ -97,8 +97,11 @@ export class AirflowCard extends LitElement {
         const fanDuration = levelState > 0 ? (3 - (normalizedLevel * 2.6)).toFixed(2) : "0";
         const flowDuration = levelState > 0 ? (2 - (normalizedLevel * 1.8)).toFixed(2) : "0";
 
-        const lang = this.config.language ?? 'en';
-        const t = translations[lang] || translations.en;
+        let lang = this.config.language;
+        if (!lang || lang === 'auto') {
+            lang = (this.hass.language as any) === 'de' ? 'de' : 'en';
+        }
+        const t = (translations as any)[lang] || translations.en;
 
         return svg`
        <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" 
