@@ -81,10 +81,10 @@ export class AirflowCardEditor extends LitElement {
                 ${this.renderSelector('entity_bypass', 'Bypass Entity', { entity: { domain: ['binary_sensor', 'sensor'] } })}
 
                 <h3>Colors</h3>
-                ${this.renderSelector('color_outdoor', 'Outdoor Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
-                ${this.renderSelector('color_supply', 'Supply Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
-                ${this.renderSelector('color_extract', 'Extract Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
-                ${this.renderSelector('color_exhaust', 'Exhaust Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
+                ${this.renderSelector('color_outdoor', 'Outdoor Color', { select: { options: colorOptions, custom_value: true } })}
+                ${this.renderSelector('color_supply', 'Supply Color', { select: { options: colorOptions, custom_value: true } })}
+                ${this.renderSelector('color_extract', 'Extract Color', { select: { options: colorOptions, custom_value: true } })}
+                ${this.renderSelector('color_exhaust', 'Exhaust Color', { select: { options: colorOptions, custom_value: true } })}
 
                 <h3>Other</h3>
                 ${this.renderSelector('efficiency_calculation_dynamic', 'Enable dynamic calculation from temperatures', { boolean: {} })}

@@ -4,10 +4,9 @@ Eine benutzerdefinierte Lovelace-Karte zur Visualisierung von Lüftungsanlagen (
 
 ## Visualisierung
 
-|               Normalbetrieb                |                        Aktiver Bypass                         |
-| :----------------------------------------: | :-----------------------------------------------------------: |
-| ![Normalbetrieb](docs/airflow-diagram.png) |    ![Aktiver Bypass](docs/airflow-diagram-with-bypass.png)    |
-|       *Standard-Wärmetauschermodus*        | *Bypass aktiv: Außenluft wird am Wärmetauscher vorbeigeführt* |
+| ![Normalbetrieb](docs/airflow-diagram.png) |    ![Aktiver Bypass](docs/airflow-diagram-with-bypass.png)    | ![Dark Mode](docs/airflow-dark-mode.png) |
+| :----------------------------------------: | :-----------------------------------------------------------: | :------------------------------------: |
+|       *Standard-Wärmetauschermodus*        | *Bypass aktiv: Außenluft wird am Wärmetauscher vorbeigeführt* | *Unterstützung für Dark Mode / Dark Themes* |
 
 ## Terminologie
 
@@ -26,8 +25,8 @@ Die folgenden Standardbegriffe werden für die Luftwege verwendet:
 - **Dynamische Geschwindigkeit:** Luftstrom- und Lüftergeschwindigkeit passen sich der aktuellen Lüfterstufe an. Funktioniert auch dann automatisch, wenn keine RPM-Sensoren vorhanden sind.
 - **Effizienzberechnung:** Option zur Live-Berechnung des Wirkungsgrads aus den Temperatursensoren.
 - **Bypass-Logik:** Visuelle Umleitung des Außenluftstroms bei aktivem Bypass inklusive Farbanpassung.
-- **Anpassbare Farben:** Vollständig konfigurierbare Farben für alle vier Luftwege.
-- **Theme-Unterstützung:** Passt sich automatisch an die Light- und Dark-Themes von Home Assistant an (verwendet Standard-CSS-Variablen).
+- **Theme & Dark Mode Unterstützung:** Passt sich automatisch an Home Assistant Designs an. Unterstützt explizite Modi für "Auto", "Dunkel" (Dark) und "Hell" (Light).
+- **Anpassbare Farben:** Vollständig konfigurierbare Farben für alle vier Luftwege über ein Auswahlmenü.
 - **UI-Editor:** Einfache Konfiguration über den Home Assistant Karten-Editor.
 
 ## Konfiguration

@@ -4,10 +4,10 @@ A custom Lovelace card to visualize ventilation systems (Airflow).
 
 ## Visualization
 
-|               Normal Operation                |                        Active Bypass                         |
-| :-------------------------------------------: | :----------------------------------------------------------: |
-| ![Normal Operation](docs/airflow-diagram.png) |    ![Active Bypass](docs/airflow-diagram-with-bypass.png)    |
-|         *Standard heat exchange mode*         | *Bypass active: Fresh air diverts around the heat exchanger* |
+|               Normal Operation                |                        Active Bypass                         |               Dark Mode                |
+| :-------------------------------------------: | :----------------------------------------------------------: | :------------------------------------: |
+| ![Normal Operation](docs/airflow-diagram.png) |    ![Active Bypass](docs/airflow-diagram-with-bypass.png)    | ![Dark Mode](docs/airflow-dark-mode.png) |
+|         *Standard heat exchange mode*         | *Bypass active: Fresh air diverts around the heat exchanger* | *Dark Mode / Dark Theme support* |
 
 ## Airflow Terminology
 
@@ -26,8 +26,8 @@ The following standard terminology is used for the air paths:
 - **Dynamic Animation Speed:** Airflow and fan speeds adjust based on the current ventilation level. Works automatically even if no RPM sensors are available.
 - **Efficiency Calculation:** Option to calculate heat exchanger efficiency live from temperature sensors.
 - **Bypass Logic:** Visually diverts the fresh air stream when the bypass is active and unifies the color.
-- **Customizable Colors:** Fully adjustable colors for all four airflow paths.
-- **Theme Support:** Automatically adapts to Home Assistant's light and dark themes using standard CSS variables.
+- **Theme & Dark Mode Support:** Automatically adapts to Home Assistant's themes. Supports explicit "Auto", "Dark", and "Light" modes via configuration.
+- **Customizable Colors:** Fully adjustable colors for all four airflow paths via a selection menu.
 - **UI Editor:** Easy configuration via the Home Assistant card editor.
 
 ## Configuration
