@@ -2,8 +2,9 @@
 
 Diese Datei dient als Leitfaden für KI-Agenten, die an diesem Projekt arbeiten.
 
-## WICHTIG: Kommunikationssprache
-**Die gesamte Kommunikation mit dem Benutzer muss ausnahmslos auf DEUTSCH erfolgen.** Alle Erklärungen, Kommentare in Dokumenten (sofern nicht anders vorgegeben) und Antworten sollen in deutscher Sprache verfasst sein.
+## WICHTIG: Kommunikationssprache & Dokumentation
+- **Die gesamte Kommunikation mit dem Benutzer muss ausnahmslos auf DEUTSCH erfolgen.** Alle Erklärungen, Kommentare in Dokumenten (sofern nicht anders vorgegeben) und Antworten sollen in deutscher Sprache verfasst sein.
+- **Dokumentations-Synchronität:** Das Projekt führt Dokumentation in Deutsch (`README.de.md`) und Englisch (`README.md`). Bei Änderungen an Funktionen oder Konfigurationsmöglichkeiten müssen **immer beide Dateien** aktualisiert werden, um sie synchron zu halten.
 
 ## Projektübersicht
 Die `homeassistant-airflow-card` ist eine benutzerdefinierte Lovelace-Karte für Home Assistant. Sie dient der Visualisierung von Lüftungssystemen (Airflow), einschließlich der Darstellung von Wärmetauschern, Bypass-Logik und verschiedenen Luftströmen (Außenluft, Zuluft, Abluft, Fortluft).
@@ -29,7 +30,7 @@ Die `homeassistant-airflow-card` ist eine benutzerdefinierte Lovelace-Karte für
 
 ## Richtlinien
 - Verwende Lit-Dekoratoren (`@property`, `@state`, `@customElement`) für reaktive Eigenschaften und Komponenten-Definitionen.
-- Animationen basieren auf CSS und SVG-Pfaden innerhalb der Lit-Templates.
+- Animationen basieren auf nativem SVG-Code (`animateTransform`) und CSS-Pfaden innerhalb der Lit-Templates, um maximale Kompatibilität und Performance zu gewährleisten.
 - Die Karte sollte responsiv sein und sich an verschiedene Größen in der Home Assistant UI anpassen.
 - Neue Features sollten sowohl im Code als auch im Editor (`airflow-card-editor.ts`) berücksichtigt werden.
 - **Sprache:** Code-Kommentare können in Englisch verfasst werden (Standard für Code), aber die Benutzerführung und Dokumentation im Projekt (wie README) sollte Deutsch unterstützen oder primär Deutsch sein. Die Kommunikation mit dem Entwickler ist immer Deutsch.

@@ -21,9 +21,9 @@ Die folgenden Standardbegriffe werden für die Luftwege verwendet:
 | **Fortluft**  | Exhaust Air | Verbrauchte Luft nach draußen   | Gerät -> Außen (Unten Links)  |
 
 ## Funktionen
-- **Dynamische Visualisierung:** Animiert Luftströme und Lüfter basierend auf Live-Daten.
+- **Dynamische Visualisierung:** Animiert Luftströme und Lüfter basierend auf Live-Daten mit robuster SVG-Technik.
 - **Sprachunterstützung:** Integrierte Unterstützung für Deutsch und Englisch.
-- **Dynamische Geschwindigkeit:** Luftstrom- und Lüftergeschwindigkeit passen sich der aktuellen Lüfterstufe an.
+- **Dynamische Geschwindigkeit:** Luftstrom- und Lüftergeschwindigkeit passen sich der aktuellen Lüfterstufe an. Funktioniert auch dann automatisch, wenn keine RPM-Sensoren vorhanden sind.
 - **Effizienzberechnung:** Option zur Live-Berechnung des Wirkungsgrads aus den Temperatursensoren.
 - **Bypass-Logik:** Visuelle Umleitung des Außenluftstroms bei aktivem Bypass inklusive Farbanpassung.
 - **Anpassbare Farben:** Vollständig konfigurierbare Farben für alle vier Luftwege.
@@ -40,10 +40,10 @@ Die Karte kann vollständig über den visuellen Editor konfiguriert werden.
 - **Außenluft Temp:** Temperatur der frischen Luft von draußen.
 
 ### Optionale Entitäten & Einstellungen
-- **Zu-/Abluftventilator:** RPM-Sensoren für die Motoren. Werte > 0 lösen die Animation aus.
+- **Zu-/Abluftventilator:** Sensoren für die Motoren (z. B. RPM oder Zustand). Wenn 0 oder aus, bleibt das Icon statisch, außer eine **Lüfterstufe** > 0 wird erkannt.
 - **Effizienz Sensor:** Bestehender Sensor für den Wirkungsgrad des Wärmetauschers (%).
 - **Dynamische Effizienzberechnung:** Falls aktiviert, berechnet die Karte den Wert selbst: `(Zuluft - Außenluft) / (Abluft - Außenluft) * 100`.
-- **Lüfterstufe Sensor:** Sensor für die aktuelle Betriebsstufe (z. B. 1, 2, 3).
+- **Lüfterstufe Sensor:** Sensor für die aktuelle Betriebsstufe (z. B. 1, 2, 3). Dieser Sensor steuert die Animation nun auch dann, wenn keine RPM-Sensoren konfiguriert sind.
 - **Min/Max Stufe:** Bereich deiner Lüfterstufen zur Skalierung der Animationsgeschwindigkeit.
 - **Bypass Entität:** Binärer Sensor oder Sensor, der anzeigt, ob der Bypass aktiv ist.
 - **Sprache:** Auswahl zwischen Deutsch und Englisch.

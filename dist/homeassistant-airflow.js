@@ -919,7 +919,7 @@ let D = class extends E {
   renderFan(o, t, e, s, i) {
     const r = e ? this.hass.states[e] : void 0, n = (r == null ? void 0 : r.state) ?? "0";
     r == null || r.attributes.unit_of_measurement;
-    const a = parseFloat(n), c = n === "on" || !isNaN(a) && a > 0, l = !isNaN(a) && a > 0;
+    const a = parseFloat(n), c = n === "on" || !isNaN(a) && a > 0 || i !== "0", l = !isNaN(a) && a > 0;
     return $`
             <g transform="translate(${o}, ${t})">
                 <!-- Speed Display above fan (Hidden if 0) -->

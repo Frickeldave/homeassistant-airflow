@@ -254,9 +254,9 @@ export class AirflowCard extends LitElement {
         const fanState = stateObj?.state ?? '0';
         const unit = stateObj?.attributes.unit_of_measurement ?? '';
 
-        // Check if numeric > 0 or "on"
+        // Check if numeric > 0 or "on" or if duration > 0 (meaning level > 0)
         const numericState = parseFloat(fanState);
-        const isSpinning = fanState === 'on' || (!isNaN(numericState) && numericState > 0);
+        const isSpinning = fanState === 'on' || (!isNaN(numericState) && numericState > 0) || (duration !== "0");
         const showSpeed = !isNaN(numericState) && numericState > 0;
 
         // Render a 3-blade fan with a central hub and speed display
