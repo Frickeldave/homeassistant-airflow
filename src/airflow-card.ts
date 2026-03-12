@@ -173,16 +173,16 @@ export class AirflowCard extends LitElement {
          <!-- Path 1: Outdoor (Left Top) -> Supply (Right Bottom) -->
          <!-- Entry -->
          <path class="flow-line" d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 40} ${cy - 40}" fill="none" stroke="${colorOutdoor}" stroke-width="8" stroke-linecap="round" />
-         <!-- Crossing (Inside Heat Exchanger) - Thinner with Gradient. Diverts if Bypass is Active -->
-         <path class="flow-line-inner" d="${isBypassOpen ? `M ${cx - 40} ${cy - 40} L ${cx - 80} ${cy} L ${cx} ${cy + 80} L ${cx + 40} ${cy + 40}` : `M ${cx - 40} ${cy - 40} L ${cx + 40} ${cy + 40}`}" fill="none" stroke="${isBypassOpen ? colorOutdoor : 'url(#gradOutdoorSupply)'}" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+         <!-- Crossing Stream 1 (Outdoor -> Supply) -->
+         ${this.renderParticleStream(cx - 40, cy - 40, cx + 40, cy + 40, colorOutdoor, isBypassOpen ? colorOutdoor : colorFresh, flowDuration, isBypassOpen, cx, cy)}
          <!-- Exit -->
          <path class="flow-line" d="M ${cx + 40} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${isBypassOpen ? colorOutdoor : colorFresh}" stroke-width="8" stroke-linecap="round" />
 
          <!-- Path 2: Extract (Right Top) -> Exhaust (Left Bottom) -->
          <!-- Entry -->
          <path class="flow-line" d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 40} ${cy - 40}" fill="none" stroke="${colorStale}" stroke-width="8" stroke-linecap="round" />
-         <!-- Crossing (Inside Heat Exchanger) - Thinner at 45 deg with Gradient -->
-         <path class="flow-line-inner" d="M ${cx + 40} ${cy - 40} L ${cx - 40} ${cy + 40}" fill="none" stroke="url(#gradExtractExhaust)" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+         <!-- Crossing Stream 2 (Extract -> Exhaust) -->
+         ${this.renderParticleStream(cx + 40, cy - 40, cx - 40, cy + 40, colorStale, colorExhaust, flowDuration, false, cx, cy)}
          <!-- Exit -->
          <path class="flow-line" d="M ${cx - 40} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${colorExhaust}" stroke-width="8" stroke-linecap="round" />
 
@@ -268,6 +268,70 @@ export class AirflowCard extends LitElement {
                 <text x="${width / 2}" y="42" font-size="14" text-anchor="middle" fill="${textColor}">${efficiency}%</text>
             </g>
         `;
+    }
+
+    private renderParticleStream(
+        startX: number, startY: number,
+        endX: number, endY: number,
+        colorStart: string, colorEnd: string,
+        durationStr: string,
+        isBypass: boolean, cx: number, cy: number
+    ): any {
+        if (durationStr === "0") return html``;
+        const durSeconds = parseFloat(durationStr);
+        if (isNaN(durSeconds) || durSeconds <= 0) return html``;
+
+        const particles: any[] = [];
+        const numPaths = 7;
+        const particlesPerPath = 4;
+        
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const length = Math.sqrt(dx*dx + dy*dy);
+        const nx = -dy / length;
+        const ny = dx / length;
+
+        for (let p = 0; p < numPaths; p++) {
+            const offset = (p - (numPaths - 1) / 2) * 4.5; 
+            
+            let pathData = "";
+            let animDur = durSeconds;
+            if (isBypass) {
+                const p1x = cx - 40 + nx * offset; const p1y = cy - 40 + ny * offset;
+                const p2x = cx - 80 + nx * offset; const p2y = cy + ny * offset; 
+                const p3x = cx + nx * offset;      const p3y = cy + 80 + ny * offset;
+                const p4x = cx + 40 + nx * offset; const p4y = cy + 40 + ny * offset;
+                pathData = `M ${p1x} ${p1y} L ${p2x} ${p2y} L ${p3x} ${p3y} L ${p4x} ${p4y}`;
+                animDur = durSeconds * 1.5;
+            } else {
+                pathData = `M ${startX + nx * offset} ${startY + ny * offset} L ${endX + nx * offset} ${endY + ny * offset}`;
+            }
+
+            const interval = animDur / particlesPerPath;
+            const staggerOffset = Math.abs(p - (numPaths - 1) / 2) * (interval / numPaths) + (p % 2) * 0.1;
+
+            for (let i = 0; i < particlesPerPath; i++) {
+                const delay = -(interval * i + staggerOffset).toFixed(2);
+                particles.push(svg`
+                    <circle cx="0" cy="0" r="2.5" fill="${colorStart}" opacity="0.8">
+                        <animateMotion 
+                            path="${pathData}" 
+                            dur="${animDur.toFixed(2)}s" 
+                            begin="${delay}s" 
+                            repeatCount="indefinite" />
+                        ${colorStart !== colorEnd ? svg`
+                        <animate 
+                            attributeName="fill" 
+                            values="${colorStart};${colorEnd}" 
+                            dur="${animDur.toFixed(2)}s" 
+                            begin="${delay}s" 
+                            repeatCount="indefinite" />
+                        ` : ''}
+                    </circle>
+                `);
+            }
+        }
+        return particles;
     }
 
     private _getNumericState(entityId: string | undefined): number | undefined {
