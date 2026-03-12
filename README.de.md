@@ -4,7 +4,7 @@ Eine benutzerdefinierte Lovelace-Karte zur Visualisierung von Lüftungsanlagen (
 
 ## Visualisierung
 
-| ![Normalbetrieb](docs/airflow-diagram.png) |    ![Aktiver Bypass](docs/airflow-diagram-with-bypass.png)    | ![Dark Mode](docs/airflow-dark-mode.png) |
+| ![Normalbetrieb](docs/normal.gif) |    ![Aktiver Bypass](docs/bypass.gif)    | ![Dark Mode](docs/dark.gif) |
 | :----------------------------------------: | :-----------------------------------------------------------: | :------------------------------------: |
 |       *Standard-Wärmetauschermodus*        | *Bypass aktiv: Außenluft wird am Wärmetauscher vorbeigeführt* | *Unterstützung für Dark Mode / Dark Themes* |
 

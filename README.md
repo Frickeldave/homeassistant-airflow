@@ -6,7 +6,7 @@ A custom Lovelace card to visualize ventilation systems (Airflow).
 
 |               Normal Operation                |                        Active Bypass                         |               Dark Mode                |
 | :-------------------------------------------: | :----------------------------------------------------------: | :------------------------------------: |
-| ![Normal Operation](docs/airflow-diagram.png) |    ![Active Bypass](docs/airflow-diagram-with-bypass.png)    | ![Dark Mode](docs/airflow-dark-mode.png) |
+| ![Normal Operation](docs/normal.gif) |    ![Active Bypass](docs/bypass.gif)    | ![Dark Mode](docs/dark.gif) |
 |         *Standard heat exchange mode*         | *Bypass active: Fresh air diverts around the heat exchanger* | *Dark Mode / Dark Theme support* |
 
 ## Airflow Terminology
