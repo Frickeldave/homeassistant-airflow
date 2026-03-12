@@ -8,4 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: home-assistant/actions/hassfest@master
+      - name: Check for manifest.json
+        id: manifest
+        run: |
+          if [ -f "manifest.json" ]; then
+            echo "has_manifest=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_manifest=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Hassfest
+        if: steps.manifest.outputs.has_manifest == 'true'
+        uses: home-assistant/actions/hassfest@master
