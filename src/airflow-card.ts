@@ -132,7 +132,7 @@ export class AirflowCard extends LitElement {
             : (isLight ? '#f0f0f0' : '#333');
 
         return svg`
-       <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" 
+       <svg viewBox="40 35 520 380" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" 
             style="--fan-speed: ${fanDuration}s; --flow-speed: ${flowDuration}s; --flow-display: ${flowDuration === "0" ? 'none' : 'block'};">
          <defs>
             <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -326,8 +326,6 @@ export class AirflowCard extends LitElement {
       }
       .drawing-container {
         width: 100%;
-        max-width: 500px;
-        margin-bottom: 16px;
       }
       .flow-line {
           stroke-dasharray: 10, 15;

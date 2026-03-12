@@ -286,7 +286,7 @@ k.elementStyles = [], k.shadowRootOptions = { mode: "open" }, k[F("elementProper
  */
 const L = globalThis, mt = (o) => o, G = L.trustedTypes, gt = G ? G.createPolicy("lit-html", { createHTML: (o) => o }) : void 0, kt = "$lit$", g = `lit$${Math.random().toFixed(9).slice(2)}$`, Mt = "?" + g, Zt = `<${Mt}>`, C = document, B = () => C.createComment(""), H = (o) => o === null || typeof o != "object" && typeof o != "function", st = Array.isArray, Kt = (o) => st(o) || typeof (o == null ? void 0 : o[Symbol.iterator]) == "function", J = `[ 	
 \f\r]`, N = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, vt = /-->/g, xt = />/g, w = RegExp(`>|${J}(?:([^\\s"'>=/]+)(${J}*=${J}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), bt = /'/g, At = /"/g, Ot = /^(?:script|style|textarea|title)$/i, Tt = (o) => (t, ...e) => ({ _$litType$: o, strings: t, values: e }), U = Tt(1), y = Tt(2), O = Symbol.for("lit-noChange"), f = Symbol.for("lit-nothing"), wt = /* @__PURE__ */ new WeakMap(), E = C.createTreeWalker(C, 129);
+\f\r"'\`<>=]|("|')|))|$)`, "g"), At = /'/g, bt = /"/g, Ot = /^(?:script|style|textarea|title)$/i, Tt = (o) => (t, ...e) => ({ _$litType$: o, strings: t, values: e }), U = Tt(1), y = Tt(2), O = Symbol.for("lit-noChange"), f = Symbol.for("lit-nothing"), wt = /* @__PURE__ */ new WeakMap(), E = C.createTreeWalker(C, 129);
 function Nt(o, t) {
   if (!st(o) || !o.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return gt !== void 0 ? gt.createHTML(t) : t;
@@ -297,7 +297,7 @@ const Jt = (o, t) => {
   for (let c = 0; c < e; c++) {
     const a = o[c];
     let d, l, h = -1, p = 0;
-    for (; p < a.length && (r.lastIndex = p, l = r.exec(a), l !== null); ) p = r.lastIndex, r === N ? l[1] === "!--" ? r = vt : l[1] !== void 0 ? r = xt : l[2] !== void 0 ? (Ot.test(l[2]) && (i = RegExp("</" + l[2], "g")), r = w) : l[3] !== void 0 && (r = w) : r === w ? l[0] === ">" ? (r = i ?? N, h = -1) : l[1] === void 0 ? h = -2 : (h = r.lastIndex - l[2].length, d = l[1], r = l[3] === void 0 ? w : l[3] === '"' ? At : bt) : r === At || r === bt ? r = w : r === vt || r === xt ? r = N : (r = w, i = void 0);
+    for (; p < a.length && (r.lastIndex = p, l = r.exec(a), l !== null); ) p = r.lastIndex, r === N ? l[1] === "!--" ? r = vt : l[1] !== void 0 ? r = xt : l[2] !== void 0 ? (Ot.test(l[2]) && (i = RegExp("</" + l[2], "g")), r = w) : l[3] !== void 0 && (r = w) : r === w ? l[0] === ">" ? (r = i ?? N, h = -1) : l[1] === void 0 ? h = -2 : (h = r.lastIndex - l[2].length, d = l[1], r = l[3] === void 0 ? w : l[3] === '"' ? bt : At) : r === bt || r === At ? r = w : r === vt || r === xt ? r = N : (r = w, i = void 0);
     const u = r === w && o[c + 1].startsWith("/>") ? " " : "";
     n += r === N ? a + Zt : h >= 0 ? (s.push(d), a.slice(0, h) + kt + a.slice(h) + g + u) : a + g + (h === -2 ? c : u);
   }
@@ -812,9 +812,9 @@ let W = class extends M {
     const i = this.config.color_supply || "#4CAF50", n = this.config.color_extract || "#FFB300", r = this.config.color_exhaust || "#F44336", c = this.config.color_outdoor || "#2196F3", a = this.config.entity_bypass, d = a ? (ut = this.hass.states[a]) == null ? void 0 : ut.state : "off", l = d === "on" || d === "open" || d === "active", h = this.config.entity_level, p = h ? parseFloat(((pt = this.hass.states[h]) == null ? void 0 : pt.state) ?? "1") : 1, u = isNaN(p) ? 1 : p, $ = this.config.level_min ?? 0, at = (this.config.level_max ?? 4) - $, ct = at > 0 ? Math.max(0, Math.min(1, (u - $) / at)) : 0.5, Z = u > 0 ? (3 - ct * 2.6).toFixed(2) : "0", lt = u > 0 ? (2 - ct * 1.8).toFixed(2) : "0";
     let z = this.config.language;
     (!z || z === "auto") && (z = this.hass.language === "de" ? "de" : "en");
-    const P = Et[z] || Et.en, ht = this.config.card_background_mode || "auto", m = ht === "light", x = ht === "auto", _ = x ? "var(--ha-card-background, var(--card-background-color, var(--paper-card-background-color, white)))" : m ? "white" : "#1c1c1c", b = x ? "var(--primary-text-color, var(--primary-text-color, #333))" : m ? "#333" : "#e1e1e1", Ut = x ? "var(--secondary-text-color, var(--secondary-text-color, #444))" : m ? "#444" : "#b0b0b0", A = x ? "var(--divider-color, var(--divider-color, #ccc))" : m ? "#ccc" : "#444", Bt = x ? "var(--divider-color, var(--primary-text-color, #333))" : m ? "#333" : "#444", Ht = x ? "var(--primary-background-color, var(--primary-background-color, #fdfdfd))" : m ? "#fdfdfd" : "#2c2c2c", dt = x ? "var(--secondary-background-color, var(--secondary-background-color, #f0f0f0))" : m ? "#f0f0f0" : "#333";
+    const P = Et[z] || Et.en, ht = this.config.card_background_mode || "auto", m = ht === "light", x = ht === "auto", _ = x ? "var(--ha-card-background, var(--card-background-color, var(--paper-card-background-color, white)))" : m ? "white" : "#1c1c1c", A = x ? "var(--primary-text-color, var(--primary-text-color, #333))" : m ? "#333" : "#e1e1e1", Ut = x ? "var(--secondary-text-color, var(--secondary-text-color, #444))" : m ? "#444" : "#b0b0b0", b = x ? "var(--divider-color, var(--divider-color, #ccc))" : m ? "#ccc" : "#444", Bt = x ? "var(--divider-color, var(--primary-text-color, #333))" : m ? "#333" : "#444", Ht = x ? "var(--primary-background-color, var(--primary-background-color, #fdfdfd))" : m ? "#fdfdfd" : "#2c2c2c", dt = x ? "var(--secondary-background-color, var(--secondary-background-color, #f0f0f0))" : m ? "#f0f0f0" : "#333";
     return y`
-       <svg viewBox="0 0 ${600} ${450}" xmlns="http://www.w3.org/2000/svg" 
+       <svg viewBox="40 35 520 380" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" 
             style="--fan-speed: ${Z}s; --flow-speed: ${lt}s; --flow-display: ${lt === "0" ? "none" : "block"};">
          <defs>
             <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -843,7 +843,7 @@ let W = class extends M {
          <rect x="${50}" y="${45}" width="500" height="360" rx="15" fill="${_}" stroke="${Bt}" stroke-width="2" filter="url(#dropShadow)" />
          
          <!-- Heat Exchanger (Diamond shape in middle) -->
-         <rect x="${300 - 56.5}" y="${225 - 56.5}" width="113" height="113" transform="rotate(45 ${300} ${225})" fill="${Ht}" stroke="${A}" stroke-width="1" />
+         <rect x="${300 - 56.5}" y="${225 - 56.5}" width="113" height="113" transform="rotate(45 ${300} ${225})" fill="${Ht}" stroke="${b}" stroke-width="1" />
          
          <!-- Background Ducts (Static) -->
          <!-- Path 1: Outdoor -> Supply -->
@@ -870,14 +870,14 @@ let W = class extends M {
 
          <!-- Port Boxes (Label + Temperature) -->
          <!-- Top Boxes: Positioned inside the frame, above duct lines -->
-         ${this.renderPortBox(70, 65, P.outdoor, this.config.entity_temp_outdoor, c, _, A, b)}
-         ${this.renderEfficiency(255, 65, P.efficiency, _, A, Ut, b)}
-         ${this.renderPortBox(440, 65, P.extract, this.config.entity_temp_extract, n, _, A, b)}
+         ${this.renderPortBox(70, 65, P.outdoor, this.config.entity_temp_outdoor, c, _, b, A)}
+         ${this.renderEfficiency(255, 65, P.efficiency, _, b, Ut, A)}
+         ${this.renderPortBox(440, 65, P.extract, this.config.entity_temp_extract, n, _, b, A)}
          
          <!-- Bottom Boxes: Positioned inside the frame, below duct lines -->
-         ${this.renderPortBox(70, 330, P.exhaust, this.config.entity_temp_exhaust, r, _, A, b)}
-         ${this.renderPortBox(255, 330, P.level, this.config.entity_level, m ? "#444" : b, _, A, b)}
-         ${this.renderPortBox(440, 330, P.supply, this.config.entity_temp_supply, l ? c : i, _, A, b)}
+         ${this.renderPortBox(70, 330, P.exhaust, this.config.entity_temp_exhaust, r, _, b, A)}
+         ${this.renderPortBox(255, 330, P.level, this.config.entity_level, m ? "#444" : A, _, b, A)}
+         ${this.renderPortBox(440, 330, P.supply, this.config.entity_temp_supply, l ? c : i, _, b, A)}
 
          <!-- Fans -->
          ${this.renderFan(450, 285, this.config.entity_fan_supply, l ? c : i, Z, _)}
@@ -977,8 +977,6 @@ let W = class extends M {
       }
       .drawing-container {
         width: 100%;
-        max-width: 500px;
-        margin-bottom: 16px;
       }
       .flow-line {
           stroke-dasharray: 10, 15;
