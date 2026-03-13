@@ -40,7 +40,7 @@ export class AirflowCardEditor extends LitElement {
             <div class="card-config">
                 <div class="debug-box">
                     <strong>Editor Config:</strong><br>
-                    Version: 1.5 (Level Min/Max)<br>
+                    Version: 1.6 (Dynamic Colors & Particles)<br>
                 </div>
 
                 ${this.renderSelector('name', 'Name', { text: {} })}
@@ -79,7 +79,7 @@ export class AirflowCardEditor extends LitElement {
                 ${this.renderSelector('entity_level', 'Fan Level Entity', { entity: { domain: 'sensor' } })}
                 ${this.renderSelector('level_min', 'Min Level (Default: 0)', { number: { mode: "box", min: 0, max: 100 } })}
                 ${this.renderSelector('level_max', 'Max Level (Default: 4)', { number: { mode: "box", min: 0, max: 100 } })}
-                ${this.renderSelector('entity_efficiency', 'Efficiency Entity', { entity: { domain: 'sensor' } })}
+                ${!this._config.efficiency_calculation_dynamic ? this.renderSelector('entity_efficiency', 'Efficiency Entity', { entity: { domain: 'sensor' } }) : html`<div class="debug-box" style="margin-top: 10px;">Efficiency entity is disabled because dynamic calculation is enabled.</div>`}
 
                 <h3>Bypass</h3>
                 ${this.renderSelector('entity_bypass', 'Bypass Entity', { entity: { domain: ['binary_sensor', 'sensor'] } })}
