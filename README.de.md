@@ -26,7 +26,7 @@ Die folgenden Standardbegriffe werden für die Luftwege verwendet:
 - **Sprachunterstützung:** Integrierte Unterstützung für Deutsch und Englisch.
 - **Dynamische Geschwindigkeit:** Luftstrom- und Lüftergeschwindigkeit passen sich der aktuellen Lüfterstufe an. Funktioniert auch dann automatisch, wenn keine RPM-Sensoren vorhanden sind.
 - **Effizienzberechnung:** Option zur Live-Berechnung des Wirkungsgrads aus den Temperatursensoren.
-- **Bypass-Logik:** Visuelle Umleitung des Außenluftstroms bei aktivem Bypass inklusive Farbanpassung.
+- **Bypass-Logik:** Visuelle Umleitung des Außenluftstroms bei aktivem Bypass inklusive partieller Farbanpassung der Luftströme.
 - **Theme & Dark Mode Unterstützung:** Passt sich automatisch an Home Assistant Designs an. Unterstützt explizite Modi für "Auto", "Dunkel" (Dark) und "Hell" (Light).
 - **Anpassbare Farben:** Vollständig konfigurierbare Farben für alle vier Luftwege über ein Auswahlmenü.
 - **UI-Editor:** Einfache Konfiguration über den Home Assistant Karten-Editor.

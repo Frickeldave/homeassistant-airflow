@@ -80,6 +80,10 @@ export class AirflowCard extends LitElement {
         const bypassState = bypassEntity ? this.hass.states[bypassEntity]?.state : 'off';
         const isBypassOpen = bypassState === 'on' || bypassState === 'open' || bypassState === 'active';
 
+        // Calculate blended colors for bypass mode (40% blend of end color)
+        const blendedFresh = isBypassOpen ? this._blendColors(colorOutdoor, colorFresh, 0.4) : colorFresh;
+        const blendedExhaust = isBypassOpen ? this._blendColors(colorStale, colorExhaust, 0.4) : colorExhaust;
+
         // Calculate dynamic speeds
         const levelEntity = this.config.entity_level;
         const levelStateRaw = levelEntity ? parseFloat(this.hass.states[levelEntity]?.state ?? '1') : 1;
@@ -174,17 +178,17 @@ export class AirflowCard extends LitElement {
          <!-- Entry -->
          <path class="flow-line" d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx - 40} ${cy - 40}" fill="none" stroke="${colorOutdoor}" stroke-width="8" stroke-linecap="round" />
          <!-- Crossing Stream 1 (Outdoor -> Supply) -->
-         ${this.renderParticleStream(cx - 40, cy - 40, cx + 40, cy + 40, colorOutdoor, isBypassOpen ? colorOutdoor : colorFresh, flowDuration, isBypassOpen, cx, cy)}
+         ${this.renderParticleStream(cx - 40, cy - 40, cx + 40, cy + 40, colorOutdoor, blendedFresh, flowDuration, isBypassOpen, cx, cy)}
          <!-- Exit -->
-         <path class="flow-line" d="M ${cx + 40} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${isBypassOpen ? colorOutdoor : colorFresh}" stroke-width="8" stroke-linecap="round" />
+         <path class="flow-line" d="M ${cx + 40} ${cy + 40} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${blendedFresh}" stroke-width="8" stroke-linecap="round" />
 
          <!-- Path 2: Extract (Right Top) -> Exhaust (Left Bottom) -->
          <!-- Entry -->
          <path class="flow-line" d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 40} ${cy - 40}" fill="none" stroke="${colorStale}" stroke-width="8" stroke-linecap="round" />
          <!-- Crossing Stream 2 (Extract -> Exhaust) -->
-         ${this.renderParticleStream(cx + 40, cy - 40, cx - 40, cy + 40, colorStale, colorExhaust, flowDuration, false, cx, cy)}
+         ${this.renderParticleStream(cx + 40, cy - 40, cx - 40, cy + 40, colorStale, blendedExhaust, flowDuration, false, cx, cy)}
          <!-- Exit -->
-         <path class="flow-line" d="M ${cx - 40} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${colorExhaust}" stroke-width="8" stroke-linecap="round" />
+         <path class="flow-line" d="M ${cx - 40} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${blendedExhaust}" stroke-width="8" stroke-linecap="round" />
 
          <!-- Port Boxes (Label + Temperature) -->
          <!-- Top Boxes: Positioned inside the frame, above duct lines -->
@@ -193,18 +197,16 @@ export class AirflowCard extends LitElement {
          ${this.renderPortBox(cx + 140, cy - 160, t.extract, this.config.entity_temp_extract, colorStale, cardBg, divider, primaryText)}
          
          <!-- Bottom Boxes: Positioned inside the frame, below duct lines -->
-         ${this.renderPortBox(cx - 230, cy + 105, t.exhaust, this.config.entity_temp_exhaust, colorExhaust, cardBg, divider, primaryText)}
+         ${this.renderPortBox(cx - 230, cy + 105, t.exhaust, this.config.entity_temp_exhaust, blendedExhaust, cardBg, divider, primaryText)}
          ${this.renderPortBox(cx - 45, cy + 105, t.level, this.config.entity_level, isLight ? "#444" : primaryText, cardBg, divider, primaryText)}
-         ${this.renderPortBox(cx + 140, cy + 105, t.supply, this.config.entity_temp_supply, isBypassOpen ? colorOutdoor : colorFresh, cardBg, divider, primaryText)}
+         ${this.renderPortBox(cx + 140, cy + 105, t.supply, this.config.entity_temp_supply, blendedFresh, cardBg, divider, primaryText)}
 
          <!-- Fans -->
-         ${this.renderFan(cx + 150, cy + 60, this.config.entity_fan_supply, isBypassOpen ? colorOutdoor : colorFresh, fanDuration, cardBg)}
-         ${this.renderFan(cx - 150, cy + 60, this.config.entity_fan_extract, colorExhaust, fanDuration, cardBg)}
+         ${this.renderFan(cx + 150, cy + 60, this.config.entity_fan_supply, blendedFresh, fanDuration, cardBg)}
+         ${this.renderFan(cx - 150, cy + 60, this.config.entity_fan_extract, blendedExhaust, fanDuration, cardBg)}
          
          <!-- Bypass (If Active) -->
          ${this.renderBypass(cx, cy)}
-
-
 
        </svg>
      `;
@@ -225,7 +227,39 @@ export class AirflowCard extends LitElement {
         `;
     }
 
+    private _blendColors(color1: string, color2: string, percentage: number): string {
+        // Fallback robust hex parser
+        const parseColor = (col: string) => {
+            if (col.startsWith('#')) {
+                let hex = col.slice(1);
+                if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
+                if (hex.length === 6) {
+                    return {
+                        r: parseInt(hex.substring(0, 2), 16) || 0,
+                        g: parseInt(hex.substring(2, 4), 16) || 0,
+                        b: parseInt(hex.substring(4, 6), 16) || 0
+                    };
+                }
+            }
+            return null;
+        };
+
+        const c1 = parseColor(color1);
+        const c2 = parseColor(color2);
+
+        if (c1 && c2) {
+            const r = Math.round(c1.r + (c2.r - c1.r) * percentage);
+            const g = Math.round(c1.g + (c2.g - c1.g) * percentage);
+            const b = Math.round(c1.b + (c2.b - c1.b) * percentage);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        
+        // Fallback for CSS variables and named colors
+        return `color-mix(in srgb, ${color2} ${percentage * 100}%, ${color1})`;
+    }
+
     private renderBypass(cx: number, cy: number): SVGTemplateResult {
+
         const bypassEntity = this.config.entity_bypass;
         if (!bypassEntity) return svg``;
 

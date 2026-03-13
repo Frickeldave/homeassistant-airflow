@@ -27,7 +27,7 @@ The following standard terminology is used for the air paths:
 - **Language Support:** Built-in English and German support.
 - **Dynamic Animation Speed:** Airflow and fan speeds adjust based on the current ventilation level. Works automatically even if no RPM sensors are available.
 - **Efficiency Calculation:** Option to calculate heat exchanger efficiency live from temperature sensors.
-- **Bypass Logic:** Visually diverts the fresh air stream when the bypass is active and unifies the color.
+- **Bypass Logic:** Visually diverts the fresh air stream when the bypass is active and applies partial color blending to indicate the unexchanged airflow.
 - **Theme & Dark Mode Support:** Automatically adapts to Home Assistant's themes. Supports explicit "Auto", "Dark", and "Light" modes via configuration.
 - **Customizable Colors:** Fully adjustable colors for all four airflow paths via a selection menu.
 - **UI Editor:** Easy configuration via the Home Assistant card editor.
