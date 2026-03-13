@@ -3,8 +3,14 @@ const fs = require('fs');
 const { execSync } = require('child_process');
 const path = require('path');
 
-const modes = ['normal', 'bypass', 'dark'];
-const framesCount = 30; // 3 seconds at 10fps
+const recordings = [
+    { name: 'anim_light_static_wt', mode: 'normal', theme: 'light', color_mode: 'static' },
+    { name: 'anim_dark_dynamic_wt', mode: 'normal', theme: 'dark', color_mode: 'dynamic_temp' },
+    { name: 'anim_light_dynamic_bypass', mode: 'bypass', theme: 'light', color_mode: 'dynamic_temp' },
+    { name: 'anim_dark_static_bypass', mode: 'bypass', theme: 'dark', color_mode: 'static' },
+];
+
+const framesCount = 60; // 6 seconds at 10fps
 const fps = 10;
 const width = 600;
 const height = 480;
@@ -26,8 +32,8 @@ const height = 480;
 
     const page = await browser.newPage();
 
-    for (const mode of modes) {
-        console.log(`Recording mode: ${mode}...`);
+    for (const rec of recordings) {
+        console.log(`Recording ${rec.name} (mode: ${rec.mode}, theme: ${rec.theme}, color: ${rec.color_mode})...`);
         
         // Clean up temporary frames dir
         if (fs.existsSync('frames')) {
@@ -35,10 +41,11 @@ const height = 480;
         }
         fs.mkdirSync('frames');
 
-        await page.goto(`http://localhost:5173/capture.html?mode=${mode}`);
+        const url = `http://localhost:5173/capture.html?mode=${rec.mode}&theme=${rec.theme}&color_mode=${rec.color_mode}`;
+        await page.goto(url);
         
-        // Wait for fonts and Lit components to settle (2 seconds should be enough)
-        await new Promise(r => setTimeout(r, 2000));
+        // Wait for fonts and Lit components to settle and animation to start
+        await new Promise(r => setTimeout(r, 3000));
 
         // Take screenshots
         for (let i = 0; i < framesCount; i++) {
@@ -47,16 +54,17 @@ const height = 480;
             await new Promise(r => setTimeout(r, 1000/fps));
         }
 
-        console.log(`Converting ${mode} to GIF...`);
-        // Use ffmpeg to convert, creating a palette first for high quality GIF
-        const gifPath = `docs/${mode}.gif`;
-        if (fs.existsSync(gifPath)) fs.unlinkSync(gifPath);
+        console.log(`Converting ${rec.name} to WebP...`);
+        const webpPath = `docs/${rec.name}.webp`;
+        if (fs.existsSync(webpPath)) fs.unlinkSync(webpPath);
 
-        const palettePath = `frames/palette.png`;
-        execSync(`ffmpeg -v warning -i frames/frame-%03d.png -vf "fps=${fps},scale=${width}:${height}:flags=lanczos,palettegen" -y ${palettePath}`);
-        execSync(`ffmpeg -v warning -i frames/frame-%03d.png -i ${palettePath} -lavfi "fps=${fps},scale=${width}:${height}:flags=lanczos [x]; [x][1:v] paletteuse" -y ${gifPath}`);
-        
-        console.log(`Saved ${gifPath}`);
+        // Use ffmpeg to convert to animated WebP
+        try {
+            execSync(`ffmpeg -v warning -i frames/frame-%03d.png -vf "fps=${fps},scale=${width}:${height}:flags=lanczos" -loop 0 -preset default -lossless 0 -compression_level 4 -q:v 75 -y ${webpPath}`);
+            console.log(`Saved ${webpPath}`);
+        } catch (error) {
+            console.error(`Error converting ${rec.name}:`, error.message);
+        }
     }
 
     await browser.close();

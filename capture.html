@@ -54,20 +54,19 @@
     <script>
         const card = document.getElementById('demo-card');
         const params = new URLSearchParams(window.location.search);
-        const mode = params.get('mode') || 'normal';
-
-        let bypassState = 'off';
-        let cardMode = 'light';
         
-        if (mode === 'bypass') {
-            bypassState = 'on';
-        } else if (mode === 'dark') {
+        const mode = params.get('mode') || 'normal'; // 'normal' or 'bypass'
+        const theme = params.get('theme') || 'light'; // 'light' or 'dark'
+        const colorMode = params.get('color_mode') || 'static'; // 'static' or 'dynamic_temp'
+
+        if (theme === 'dark') {
             document.body.classList.add('dark');
-            cardMode = 'dark';
         }
 
+        const bypassState = mode === 'bypass' ? 'on' : 'off';
+        
         const hass = {
-            language: 'en',
+            language: 'de',
             states: {
                 'sensor.temp_supply': { state: '21.5', attributes: { unit_of_measurement: '°C' } },
                 'sensor.temp_extract': { state: '22.0', attributes: { unit_of_measurement: '°C' } },
@@ -96,11 +95,12 @@
             entity_efficiency: 'sensor.efficiency',
             efficiency_calculation_dynamic: true,
             entity_bypass: 'binary_sensor.bypass',
+            color_mode: colorMode,
             color_outdoor: '#2196F3',
             color_supply: '#4CAF50',
             color_extract: '#FFB300',
             color_exhaust: '#F44336',
-            card_background_mode: cardMode
+            card_background_mode: theme
         };
 
         customElements.whenDefined('airflow-card').then(() => {
