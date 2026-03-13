@@ -3,10 +3,10 @@
 Eine benutzerdefinierte Lovelace-Karte zur Visualisierung von Lüftungsanlagen (Airflow).
 
 ## Visualisierung
-
-| ![Normalbetrieb](docs/normal.gif) |    ![Aktiver Bypass](docs/bypass.gif)    | ![Dark Mode](docs/dark.gif) |
+ 
+| ![Normalbetrieb](docs/normal.webp) |    ![Aktiver Bypass](docs/bypass.webp)    | ![Dark Mode](docs/dark.webp) |
 | :----------------------------------------: | :-----------------------------------------------------------: | :------------------------------------: |
-|       *Standard-Wärmetauschermodus*        | *Bypass aktiv: Außenluft wird am Wärmetauscher vorbeigeführt* | *Unterstützung für Dark Mode / Dark Themes* |
+|       *Partikel-Animation im Wärmetauscher*        | *Bypass aktiv: Außenluft wird am Wärmetauscher vorbeigeführt* | *Unterstützung für Dark Mode / Dark Themes* |
 
 ## Terminologie
 
@@ -20,6 +20,8 @@ Die folgenden Standardbegriffe werden für die Luftwege verwendet:
 | **Fortluft**  | Exhaust Air | Verbrauchte Luft nach draußen   | Gerät -> Außen (Unten Links)  |
 
 ## Funktionen
+- **Partikel-Animation:** Dynamischer Partikel-Schwarm im Wärmetauscher, der die Luftströme lebendig visualisiert.
+- **Farbwechsel:** Sanfter Farbübergang der Partikel während des Austauschs (z.B. von Kaltblau zu Frischgrün).
 - **Dynamische Visualisierung:** Animiert Luftströme und Lüfter basierend auf Live-Daten mit robuster SVG-Technik.
 - **Sprachunterstützung:** Integrierte Unterstützung für Deutsch und Englisch.
 - **Dynamische Geschwindigkeit:** Luftstrom- und Lüftergeschwindigkeit passen sich der aktuellen Lüfterstufe an. Funktioniert auch dann automatisch, wenn keine RPM-Sensoren vorhanden sind.

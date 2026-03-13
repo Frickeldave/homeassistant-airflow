@@ -52,12 +52,14 @@
         <button onclick="setLanguage('en')">English</button>
         <button onclick="setLanguage('de')">Deutsch</button>
         <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+        <button onclick="toggleBypass()">Toggle Bypass</button>
     </div>
 
     <airflow-card id="demo-card"></airflow-card>
 
     <script>
         let currentLang = 'en';
+        let bypassActive = false;
         const cardId = 'demo-card';
 
         function updateCard() {
@@ -72,7 +74,7 @@
                     'sensor.fan_extract': { state: '0', attributes: {} },
                     'sensor.efficiency': { state: '85', attributes: { unit_of_measurement: '%' } },
                     'sensor.fan_level': { state: '1', attributes: {} },
-                    'binary_sensor.bypass': { state: 'off', attributes: {} },
+                    'binary_sensor.bypass': { state: bypassActive ? 'on' : 'off', attributes: {} },
                 }
             };
 
@@ -109,6 +111,11 @@
 
         function toggleDarkMode() {
             document.body.classList.toggle('dark');
+        }
+
+        function toggleBypass() {
+            bypassActive = !bypassActive;
+            updateCard();
         }
 
         customElements.whenDefined('airflow-card').then(() => {

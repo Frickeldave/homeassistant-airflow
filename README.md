@@ -4,9 +4,9 @@ A custom Lovelace card to visualize ventilation systems (Airflow).
 
 ## Visualization
 
-|               Normal Operation                |                        Active Bypass                         |               Dark Mode                |
+|               Particle Animation                |                        Active Bypass                         |               Dark Mode                |
 | :-------------------------------------------: | :----------------------------------------------------------: | :------------------------------------: |
-| ![Normal Operation](docs/normal.gif) |    ![Active Bypass](docs/bypass.gif)    | ![Dark Mode](docs/dark.gif) |
+| ![Normal Operation](docs/normal.webp) |    ![Active Bypass](docs/bypass.webp)    | ![Dark Mode](docs/dark.webp) |
 |         *Standard heat exchange mode*         | *Bypass active: Fresh air diverts around the heat exchanger* | *Dark Mode / Dark Theme support* |
 
 ## Airflow Terminology
@@ -21,6 +21,8 @@ The following standard terminology is used for the air paths:
 | **Exhaust Air** | Fortluft  | Stale air blown outside     | Unit -> Outside (Bottom Left) |
 
 ## Features
+- **Particle Animation:** Dynamic particle swarm within the heat exchanger that vividly visualizes airflows.
+- **Color Morphing:** Smooth color transition of particles during heat exchange (e.g., from cold blue to fresh green).
 - **Dynamic Visualization:** Animates airflow and fans based on live data using robust SVG animations.
 - **Language Support:** Built-in English and German support.
 - **Dynamic Animation Speed:** Airflow and fan speeds adjust based on the current ventilation level. Works automatically even if no RPM sensors are available.

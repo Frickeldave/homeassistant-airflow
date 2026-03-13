@@ -283,7 +283,6 @@ export class AirflowCard extends LitElement {
 
         const particles: any[] = [];
         const numPaths = 7;
-        const particlesPerPath = 4;
         
         const dx = endX - startX;
         const dy = endY - startY;
@@ -296,26 +295,47 @@ export class AirflowCard extends LitElement {
             
             let pathData = "";
             let animDur = durSeconds;
+            let currentParticlesPerPath = 4;
+            
             if (isBypass) {
-                const p1x = cx - 40 + nx * offset; const p1y = cy - 40 + ny * offset;
-                const p2x = cx - 80 + nx * offset; const p2y = cy + ny * offset; 
-                const p3x = cx + nx * offset;      const p3y = cy + 80 + ny * offset;
-                const p4x = cx + 40 + nx * offset; const p4y = cy + 40 + ny * offset;
+                const spread = 2.0; // Narrower spread for bypass
+                const D = (p - (numPaths - 1) / 2) * spread;
+                const M = 1.4142; // sqrt(2) for corner offsets to keep segments parallel
+                
+                // Entrance and exit points are staggered along the incoming/outgoing pipes
+                // to provide perpendicular width to the 90 degree turn
+                const p1x = cx - 40 - 0.7071 * D; 
+                const p1y = cy - 40 - 0.7071 * D;
+                
+                // Left corner. Outward is negative X (-1, 0)
+                const p2x = cx - 80 - D * M; 
+                const p2y = cy; 
+                
+                // Bottom corner. Outward is positive Y (0, 1)
+                const p3x = cx; 
+                const p3y = cy + 80 + D * M;
+                
+                // Exit point
+                const p4x = cx + 40 + 0.7071 * D; 
+                const p4y = cy + 40 + 0.7071 * D;
                 pathData = `M ${p1x} ${p1y} L ${p2x} ${p2y} L ${p3x} ${p3y} L ${p4x} ${p4y}`;
-                animDur = durSeconds * 1.5;
+                // Bypass is twice the length of the straight path, so duration and particles double
+                animDur = durSeconds * 2.0;
+                currentParticlesPerPath = 8;
             } else {
                 pathData = `M ${startX + nx * offset} ${startY + ny * offset} L ${endX + nx * offset} ${endY + ny * offset}`;
             }
 
-            const interval = animDur / particlesPerPath;
+            const interval = animDur / currentParticlesPerPath;
             const staggerOffset = Math.abs(p - (numPaths - 1) / 2) * (interval / numPaths) + (p % 2) * 0.1;
 
-            for (let i = 0; i < particlesPerPath; i++) {
+            for (let i = 0; i < currentParticlesPerPath; i++) {
                 const delay = -(interval * i + staggerOffset).toFixed(2);
                 particles.push(svg`
                     <circle cx="0" cy="0" r="2.5" fill="${colorStart}" opacity="0.8">
                         <animateMotion 
                             path="${pathData}" 
+                            calcMode="paced"
                             dur="${animDur.toFixed(2)}s" 
                             begin="${delay}s" 
                             repeatCount="indefinite" />
