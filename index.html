@@ -55,25 +55,47 @@
         <button onclick="toggleBypass()">Toggle Bypass</button>
     </div>
 
+    <div style="margin-bottom: 20px; text-align: center;">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('de')">Deutsch</button>
+        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+        <button onclick="toggleBypass()">Toggle Bypass</button>
+        <button onclick="toggleColorMode()">Toggle Color Mode (Dynamic)</button>
+    </div>
+
+    <div style="margin-bottom: 20px; text-align: center;">
+        <label>Outdoor Temp: <input type="number" id="tempOutdoor" value="18.0" step="1" onchange="updateTemps()"></label>
+        <label>Supply Temp: <input type="number" id="tempSupply" value="21.5" step="1" onchange="updateTemps()"></label>
+        <label>Extract Temp: <input type="number" id="tempExtract" value="22.0" step="1" onchange="updateTemps()"></label>
+        <label>Exhaust Temp: <input type="number" id="tempExhaust" value="8.0" step="1" onchange="updateTemps()"></label>
+    </div>
+
     <airflow-card id="demo-card"></airflow-card>
 
     <script>
         let currentLang = 'en';
         let bypassActive = false;
+        let colorMode = 'static';
+        let temps = {
+            outdoor: '18.0',
+            supply: '21.5',
+            extract: '22.0',
+            exhaust: '8.0'
+        };
         const cardId = 'demo-card';
 
         function updateCard() {
             const card = document.getElementById(cardId);
             const hass = {
                 states: {
-                    'sensor.temp_supply': { state: '21.5', attributes: { unit_of_measurement: '°C' } },
-                    'sensor.temp_extract': { state: '22.0', attributes: { unit_of_measurement: '°C' } },
-                    'sensor.temp_outdoor': { state: '5.0', attributes: { unit_of_measurement: '°C' } },
-                    'sensor.temp_exhaust': { state: '8.0', attributes: { unit_of_measurement: '°C' } },
+                    'sensor.temp_supply': { state: temps.supply, attributes: { unit_of_measurement: '°C' } },
+                    'sensor.temp_extract': { state: temps.extract, attributes: { unit_of_measurement: '°C' } },
+                    'sensor.temp_outdoor': { state: temps.outdoor, attributes: { unit_of_measurement: '°C' } },
+                    'sensor.temp_exhaust': { state: temps.exhaust, attributes: { unit_of_measurement: '°C' } },
                     'sensor.fan_supply': { state: '0', attributes: {} },
                     'sensor.fan_extract': { state: '0', attributes: {} },
                     'sensor.efficiency': { state: '85', attributes: { unit_of_measurement: '%' } },
-                    'sensor.fan_level': { state: '1', attributes: {} },
+                    'sensor.fan_level': { state: '2', attributes: {} },
                     'binary_sensor.bypass': { state: bypassActive ? 'on' : 'off', attributes: {} },
                 }
             };
@@ -94,10 +116,13 @@
                 entity_efficiency: 'sensor.efficiency',
                 efficiency_calculation_dynamic: true,
                 entity_bypass: 'binary_sensor.bypass',
+                color_mode: colorMode,
                 color_outdoor: '#2196F3',
                 color_supply: '#4CAF50',
                 color_extract: '#FFB300',
-                color_exhaust: '#F44336'
+                color_exhaust: '#F44336',
+                base_color_supply: '#4CAF50',
+                base_color_exhaust: '#FFB300'
             };
 
             card.setConfig(config);
@@ -115,6 +140,19 @@
 
         function toggleBypass() {
             bypassActive = !bypassActive;
+            updateCard();
+        }
+
+        function toggleColorMode() {
+            colorMode = colorMode === 'static' ? 'dynamic_temp' : 'static';
+            updateCard();
+        }
+
+        function updateTemps() {
+            temps.outdoor = document.getElementById('tempOutdoor').value;
+            temps.supply = document.getElementById('tempSupply').value;
+            temps.extract = document.getElementById('tempExtract').value;
+            temps.exhaust = document.getElementById('tempExhaust').value;
             updateCard();
         }
 

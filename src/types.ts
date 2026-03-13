@@ -21,10 +21,21 @@ export interface AirflowCardConfig {
     entity_bypass?: string; // Sommerbypass (binary_sensor or sensor)
 
     // Colors
+    color_mode?: 'static' | 'dynamic_temp';
     color_outdoor?: string;
     color_supply?: string;
     color_extract?: string;
     color_exhaust?: string;
+    
+    // Dynamic Temp Colors
+    base_color_supply?: string;
+    base_color_exhaust?: string;
+    temp_min?: number;
+    temp_max?: number;
+    temp_neutral?: number;
+    color_hot?: string;
+    color_cold?: string;
+    
     card_background_mode?: 'auto' | 'dark' | 'light';
 }
 

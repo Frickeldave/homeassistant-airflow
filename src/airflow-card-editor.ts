@@ -31,6 +31,10 @@ export class AirflowCardEditor extends LitElement {
         this._ensureColorOption('color_supply', colorOptions);
         this._ensureColorOption('color_extract', colorOptions);
         this._ensureColorOption('color_exhaust', colorOptions);
+        this._ensureColorOption('base_color_supply', colorOptions);
+        this._ensureColorOption('base_color_exhaust', colorOptions);
+        this._ensureColorOption('color_hot', colorOptions);
+        this._ensureColorOption('color_cold', colorOptions);
 
         return html`
             <div class="card-config">
@@ -81,10 +85,39 @@ export class AirflowCardEditor extends LitElement {
                 ${this.renderSelector('entity_bypass', 'Bypass Entity', { entity: { domain: ['binary_sensor', 'sensor'] } })}
 
                 <h3>Colors</h3>
-                ${this.renderSelector('color_outdoor', 'Outdoor Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
-                ${this.renderSelector('color_supply', 'Supply Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
-                ${this.renderSelector('color_extract', 'Extract Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
-                ${this.renderSelector('color_exhaust', 'Exhaust Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
+                ${this.renderSelector('color_mode', 'Color Mode', {
+                    select: {
+                        mode: 'dropdown',
+                        options: [
+                            { label: 'Static (Fixed)', value: 'static' },
+                            { label: 'Dynamic (Temperature based)', value: 'dynamic_temp' }
+                        ]
+                    }
+                })}
+
+                ${this._config.color_mode === 'dynamic_temp' ? html`
+                    <div class="dynamic-config">
+                        <h4>Base Colors (at Neutral Temp)</h4>
+                        ${this.renderSelector('base_color_supply', 'Base Color Supply/Outdoor', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
+                        ${this.renderSelector('base_color_exhaust', 'Base Color Extract/Exhaust', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
+                        
+                        <h4>Temperature Limits</h4>
+                        ${this.renderSelector('temp_neutral', 'Neutral Point (Default: 10°C)', { number: { mode: "box", step: 0.5 } })}
+                        ${this.renderSelector('temp_min', 'Min (Max Blue) (Default: -2.5°C)', { number: { mode: "box", step: 0.5 } })}
+                        ${this.renderSelector('temp_max', 'Max (Max Red) (Default: 32.5°C)', { number: { mode: "box", step: 0.5 } })}
+                        
+                        <h4>Mixing Colors</h4>
+                        ${this.renderSelector('color_hot', 'Hot Color (Default: Red)', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
+                        ${this.renderSelector('color_cold', 'Cold Color (Default: Blue)', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
+                    </div>
+                ` : html`
+                    <div class="static-config">
+                        ${this.renderSelector('color_outdoor', 'Outdoor Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
+                        ${this.renderSelector('color_supply', 'Supply Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
+                        ${this.renderSelector('color_extract', 'Extract Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
+                        ${this.renderSelector('color_exhaust', 'Exhaust Color', { select: { mode: 'dropdown', options: colorOptions, custom_value: true } })}
+                    </div>
+                `}
 
                 <h3>Other</h3>
                 ${this.renderSelector('efficiency_calculation_dynamic', 'Enable dynamic calculation from temperatures', { boolean: {} })}
@@ -149,6 +182,18 @@ export class AirflowCardEditor extends LitElement {
                 margin: 20px 0 10px 0;
                 border-bottom: 1px solid var(--divider-color, #eee);
                 padding-bottom: 4px;
+                text-transform: uppercase;
+                color: var(--secondary-text-color);
+            }
+            h4 {
+                font-size: 13px;
+                margin: 15px 0 5px 0;
+                color: var(--primary-text-color);
+            }
+            .dynamic-config, .static-config {
+                padding-left: 8px;
+                border-left: 2px solid var(--divider-color);
+                margin-left: 4px;
             }
         `;
     }

@@ -69,20 +69,38 @@ export class AirflowCard extends LitElement {
         const cy = height / 2;
         // const boxSize = 100; // This variable is no longer used, but keeping it for now if it's not explicitly removed.
 
-        // Colors
-        const colorFresh = this.config.color_supply || '#4CAF50'; // Green - Supply/Zuluft
-        const colorStale = this.config.color_extract || '#FFB300'; // Amber - Extract/Abluft
-        const colorExhaust = this.config.color_exhaust || '#F44336'; // Red - Exhaust/Fortluft
-        const colorOutdoor = this.config.color_outdoor || '#2196F3'; // Blue - Outdoor/Außenluft
+        // Colors (Base)
+        let colorSupply = this.config.color_supply || '#4CAF50'; // Green - Supply/Zuluft
+        let colorExtract = this.config.color_extract || '#FFB300'; // Amber - Extract/Abluft
+        let colorExhaust = this.config.color_exhaust || '#F44336'; // Red - Exhaust/Fortluft
+        let colorOutdoor = this.config.color_outdoor || '#2196F3'; // Blue - Outdoor/Außenluft
+
+        // Dynamic Temperature Colors
+        if (this.config.color_mode === 'dynamic_temp') {
+            const tempSupply = parseFloat(this.hass.states[this.config.entity_temp_supply]?.state || '15');
+            const tempExtract = parseFloat(this.hass.states[this.config.entity_temp_extract]?.state || '15');
+            const tempExhaust = parseFloat(this.hass.states[this.config.entity_temp_exhaust]?.state || '15');
+            const tempOutdoor = parseFloat(this.hass.states[this.config.entity_temp_outdoor]?.state || '15');
+
+            const baseSupply = this.config.base_color_supply || '#4CAF50';
+            const baseExhaust = this.config.base_color_exhaust || '#FFB300';
+
+            colorSupply = this._modulateColorByTemp(baseSupply, tempSupply);
+            colorOutdoor = this._modulateColorByTemp(baseSupply, tempOutdoor);
+            
+            colorExtract = this._modulateColorByTemp(baseExhaust, tempExtract);
+            colorExhaust = this._modulateColorByTemp(baseExhaust, tempExhaust);
+        }
 
         // Bypass State
         const bypassEntity = this.config.entity_bypass;
         const bypassState = bypassEntity ? this.hass.states[bypassEntity]?.state : 'off';
         const isBypassOpen = bypassState === 'on' || bypassState === 'open' || bypassState === 'active';
 
-        // Calculate blended colors for bypass mode (40% blend of end color)
-        const blendedFresh = isBypassOpen ? this._blendColors(colorOutdoor, colorFresh, 0.4) : colorFresh;
-        const blendedExhaust = isBypassOpen ? this._blendColors(colorStale, colorExhaust, 0.4) : colorExhaust;
+        // Bypass colors are simply the unexchanged outdoor/extract colors
+        // With dynamic temperature, they will already naturally reflect the bypass temp.
+        const blendedFresh = isBypassOpen && this.config.color_mode !== 'dynamic_temp' ? this._blendColors(colorOutdoor, colorSupply, 0.4) : colorSupply;
+        const blendedExhaust = isBypassOpen && this.config.color_mode !== 'dynamic_temp' ? this._blendColors(colorExtract, colorExhaust, 0.4) : colorExhaust;
 
         // Calculate dynamic speeds
         const levelEntity = this.config.entity_level;
@@ -152,11 +170,11 @@ export class AirflowCard extends LitElement {
 
             <linearGradient id="gradOutdoorSupply" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="${colorOutdoor}" />
-                <stop offset="100%" stop-color="${colorFresh}" />
+                <stop offset="100%" stop-color="${colorSupply}" />
             </linearGradient>
 
             <linearGradient id="gradExtractExhaust" x1="100%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="${colorStale}" />
+                <stop offset="0%" stop-color="${colorExtract}" />
                 <stop offset="100%" stop-color="${colorExhaust}" />
             </linearGradient>
          </defs>
@@ -170,6 +188,8 @@ export class AirflowCard extends LitElement {
          <!-- Background Ducts (Static) -->
          <!-- Path 1: Outdoor -> Supply -->
          <path d="M ${cx - 250} ${cy - 60} L ${cx - 60} ${cy - 60} L ${cx + 60} ${cy + 60} L ${cx + 250} ${cy + 60}" fill="none" stroke="${secondaryBg}" stroke-width="12" stroke-linecap="round"/>
+         <!-- Bypass Duct Background (if active) -->
+         ${isBypassOpen ? svg`<path d="M ${cx - 60} ${cy - 60} L ${cx - 40} ${cy - 40} L ${cx - 80} ${cy} L ${cx} ${cy + 80} L ${cx + 40} ${cy + 40} L ${cx + 60} ${cy + 60}" fill="none" stroke="${secondaryBg}" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
          <!-- Path 2: Extract -> Exhaust -->
          <path d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${secondaryBg}" stroke-width="12" stroke-linecap="round"/>
 
@@ -184,9 +204,9 @@ export class AirflowCard extends LitElement {
 
          <!-- Path 2: Extract (Right Top) -> Exhaust (Left Bottom) -->
          <!-- Entry -->
-         <path class="flow-line" d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 40} ${cy - 40}" fill="none" stroke="${colorStale}" stroke-width="8" stroke-linecap="round" />
+         <path class="flow-line" d="M ${cx + 250} ${cy - 60} L ${cx + 60} ${cy - 60} L ${cx + 40} ${cy - 40}" fill="none" stroke="${colorExtract}" stroke-width="8" stroke-linecap="round" />
          <!-- Crossing Stream 2 (Extract -> Exhaust) -->
-         ${this.renderParticleStream(cx + 40, cy - 40, cx - 40, cy + 40, colorStale, blendedExhaust, flowDuration, false, cx, cy)}
+         ${this.renderParticleStream(cx + 40, cy - 40, cx - 40, cy + 40, colorExtract, blendedExhaust, flowDuration, false, cx, cy)}
          <!-- Exit -->
          <path class="flow-line" d="M ${cx - 40} ${cy + 40} L ${cx - 60} ${cy + 60} L ${cx - 250} ${cy + 60}" fill="none" stroke="${blendedExhaust}" stroke-width="8" stroke-linecap="round" />
 
@@ -194,7 +214,7 @@ export class AirflowCard extends LitElement {
          <!-- Top Boxes: Positioned inside the frame, above duct lines -->
          ${this.renderPortBox(cx - 230, cy - 160, t.outdoor, this.config.entity_temp_outdoor, colorOutdoor, cardBg, divider, primaryText)}
          ${this.renderEfficiency(cx - 45, cy - 160, t.efficiency, cardBg, divider, secondaryText, primaryText)}
-         ${this.renderPortBox(cx + 140, cy - 160, t.extract, this.config.entity_temp_extract, colorStale, cardBg, divider, primaryText)}
+         ${this.renderPortBox(cx + 140, cy - 160, t.extract, this.config.entity_temp_extract, colorExtract, cardBg, divider, primaryText)}
          
          <!-- Bottom Boxes: Positioned inside the frame, below duct lines -->
          ${this.renderPortBox(cx - 230, cy + 105, t.exhaust, this.config.entity_temp_exhaust, blendedExhaust, cardBg, divider, primaryText)}
@@ -258,17 +278,42 @@ export class AirflowCard extends LitElement {
         return `color-mix(in srgb, ${color2} ${percentage * 100}%, ${color1})`;
     }
 
+    private _modulateColorByTemp(baseColor: string, temp: number): string {
+        const neutralTemp = this.config.temp_neutral ?? 10;
+        const maxHotTemp = this.config.temp_max ?? 32.5;
+        const minColdTemp = this.config.temp_min ?? -2.5;
+
+        // Colors to mix towards
+        const colorHot = this.config.color_hot || '#FF0000'; // Red
+        const colorCold = this.config.color_cold || '#00BFFF'; // Deep Sky Blue
+
+        let targetColor = baseColor;
+        let diff = 0;
+        let maxDiff = 1;
+
+        if (temp > neutralTemp) {
+            targetColor = colorHot;
+            diff = temp - neutralTemp;
+            maxDiff = maxHotTemp - neutralTemp;
+        } else if (temp < neutralTemp) {
+            targetColor = colorCold;
+            diff = neutralTemp - temp;
+            maxDiff = neutralTemp - minColdTemp;
+        }
+
+        // Calculate mixing ratio (0 = pure baseColor, 1 = pure targetColor)
+        // Clamp between 0 and 1
+        let ratio = diff / maxDiff;
+        ratio = Math.max(0, Math.min(1, ratio));
+
+        // Use _blendColors where percentage is the amount of color2 (baseColor)
+        // We want (1 - ratio) of baseColor and (ratio) of targetColor
+        return this._blendColors(targetColor, baseColor, 1 - ratio);
+    }
+
     private renderBypass(cx: number, cy: number): SVGTemplateResult {
-
-        const bypassEntity = this.config.entity_bypass;
-        if (!bypassEntity) return svg``;
-
-        const stateObj = this.hass.states[bypassEntity];
-        const state = stateObj?.state;
-        const isOpen = state === 'on' || state === 'open' || state === 'active';
-
-        if (!isOpen) return svg``;
-
+        // The bypass visual elements are integrated into renderDrawing directly to manage z-index
+        // This function is kept for structural backward compatibility if needed, but returns empty.
         return svg``;
     }
 

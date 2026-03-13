@@ -4,9 +4,10 @@ Eine benutzerdefinierte Lovelace-Karte zur Visualisierung von Lüftungsanlagen (
 
 ## Visualisierung
  
-| ![Normalbetrieb](docs/normal.webp) |    ![Aktiver Bypass](docs/bypass.webp)    | ![Dark Mode](docs/dark.webp) |
-| :----------------------------------------: | :-----------------------------------------------------------: | :------------------------------------: |
-|       *Partikel-Animation im Wärmetauscher*        | *Bypass aktiv: Außenluft wird am Wärmetauscher vorbeigeführt* | *Unterstützung für Dark Mode / Dark Themes* |
+| Light Mode (Statische Farben) | Dark Mode (Dynamische Farben) |
+| :-------------------------------------------: | :----------------------------------------------------------: |
+| ![Light Static WT](docs/anim_light_static_wt.webp)<br>*Standard Wärmetauscher-Betrieb* | ![Dark Dynamic WT](docs/anim_dark_dynamic_wt.webp)<br>*Farben spiegeln die echten Lufttemperaturen wider* |
+| ![Light Dynamic Bypass](docs/anim_light_dynamic_bypass.webp)<br>*Bypass aktiv: Farben bleiben warm/kalt* | ![Dark Static Bypass](docs/anim_dark_static_bypass.webp)<br>*Bypass aktiv (Dark Mode / Statische Farben)* |
 
 ## Terminologie
 
@@ -26,7 +27,7 @@ Die folgenden Standardbegriffe werden für die Luftwege verwendet:
 - **Sprachunterstützung:** Integrierte Unterstützung für Deutsch und Englisch.
 - **Dynamische Geschwindigkeit:** Luftstrom- und Lüftergeschwindigkeit passen sich der aktuellen Lüfterstufe an. Funktioniert auch dann automatisch, wenn keine RPM-Sensoren vorhanden sind.
 - **Effizienzberechnung:** Option zur Live-Berechnung des Wirkungsgrads aus den Temperatursensoren.
-- **Bypass-Logik:** Visuelle Umleitung des Außenluftstroms bei aktivem Bypass inklusive partieller Farbanpassung der Luftströme.
+- **Bypass-Logik:** Visuelle Umleitung der Luftströme bei aktivem Bypass. Bei der Einstellung `color_mode: 'dynamic_temp'` spiegeln die Farben automatisch die ungekreuzten Temperaturen wider.
 - **Theme & Dark Mode Unterstützung:** Passt sich automatisch an Home Assistant Designs an. Unterstützt explizite Modi für "Auto", "Dunkel" (Dark) und "Hell" (Light).
 - **Anpassbare Farben:** Vollständig konfigurierbare Farben für alle vier Luftwege über ein Auswahlmenü.
 - **UI-Editor:** Einfache Konfiguration über den Home Assistant Karten-Editor.
@@ -49,8 +50,11 @@ Die Karte kann vollständig über den visuellen Editor konfiguriert werden.
 - **Min/Max Stufe:** Bereich deiner Lüfterstufen zur Skalierung der Animationsgeschwindigkeit.
 - **Bypass Entität:** Binärer Sensor oder Sensor, der anzeigt, ob der Bypass aktiv ist.
 - **Sprache:** Auswahl zwischen Deutsch und Englisch.
-- **Hintergrund-Farbmodus:** Auswahl zwischen "Automatisch (Theme)", "Festes Dunkel" (Dark) und "Festes Hell" (Light).
-- **Farben:** Eigene Hex-Codes für Außenluft, Zuluft, Abluft und Fortluft.
+- **Background Color Mode:** Auswahl zwischen "Automatisch (Theme)", "Fixiertes Dunkel" und "Fixiertes Hell".
+- **Farbmodus (`color_mode`):** `static` (Standard) oder `dynamic_temp`. Im Modus `dynamic_temp` werden die Grundfarben fließend von der aktuellen Lufttemperatur moduliert (Rötlicher bei Hitze, Bläulicher bei Kälte).
+- **Statische Farben:** Anpassbare Hex-Codes für Außenluft, Zuluft, Abluft und Fortluft.
+- **Dynamische Temp Farben:** Grundfarben `base_color_supply`, `base_color_exhaust`. 
+- **Dynamische Temp Einstellungen:** `temp_min` (-2.5), `temp_max` (32.5), `temp_neutral` (10), `color_hot` (#FF0000), `color_cold` (#00BFFF).
 
 ### Theme-Modus
 Die Karte unterstützt drei verschiedene Darstellungsmodi:
